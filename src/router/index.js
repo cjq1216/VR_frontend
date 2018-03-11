@@ -112,7 +112,7 @@ export default new Router({
                     component: resolve => require(['../components/page/QuestionnaireList.vue'],resolve)
                 },
                 {
-                    path: '/user/questionnairelist/questionnairedetail',
+                    path: '/user/questionnairedetail',
                     component: resolve => require(['../components/page/QuestionnaireDetail.vue'],resolve)
                 },
                 {
