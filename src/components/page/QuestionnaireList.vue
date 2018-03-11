@@ -2,7 +2,7 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item to="/user/questionaire"><i class="el-icon-date"></i>满意度调查</el-breadcrumb-item>
+                <el-breadcrumb-item to="/user/questionnairelist"><i class="el-icon-date"></i>满意度调查</el-breadcrumb-item>
                 <el-breadcrumb-item>问卷填写</el-breadcrumb-item>
             </el-breadcrumb>
         </div>

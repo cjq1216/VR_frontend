@@ -108,8 +108,12 @@ export default new Router({
                     component: resolve => require(['../components/page/MseEdit.vue'],resolve)
                 },
                 {
-                    path: '/user/questionaire',
-                    component: resolve => require(['../components/page/Questionaire.vue'],resolve)
+                    path: '/user/questionnairelist',
+                    component: resolve => require(['../components/page/QuestionnaireList.vue'],resolve)
+                },
+                {
+                    path: '/user/questionnairelist/questionnairedetail',
+                    component: resolve => require(['../components/page/QuestionnaireDetail.vue'],resolve)
                 },
                 {
                     path: '/user/questionaire/statistic',
@@ -212,8 +216,12 @@ export default new Router({
                     component: resolve => require(['../components/page/AdministratorEncyclopediaDelete.vue'], resolve)
                 },
                 {
-                    path: '/admin/Questionaire',
-                    component: resolve => require(['../components/page/adminQuestionaire.vue'],resolve)
+                    path: '/admin/Questionnairelist',
+                    component: resolve => require(['../components/page/adminQuestionnaireList.vue'],resolve)
+                },
+                {
+                    path: '/admin/Questionnairelist/creater',
+                    component: resolve => require(['../components/page/adminQuestionnaireCreater.vue'],resolve)
                 },
                 {
                     path: '/admin/User',
