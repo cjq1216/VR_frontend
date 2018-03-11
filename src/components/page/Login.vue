@@ -151,7 +151,7 @@
             </div>
         </div>
         <div class="footer">
-            <p style="margin-top:10px;">&copy 2017 虚拟现实产品质量评估平台 &nbsp &nbsp &nbsp 如有问题，请联系管理员<span id="help">10086@qq.com</span></p>
+            <p style="margin-top:10px;">&copy 2018 虚拟现实产品质量评估平台 &nbsp &nbsp &nbsp 如有问题，请联系管理员<span id="help">10086@qq.com</span></p>
         </div>
     </div>
 </template>

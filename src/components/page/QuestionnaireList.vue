@@ -3,43 +3,54 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item to="/user/questionnairelist"><i class="el-icon-date"></i>满意度调查</el-breadcrumb-item>
-                <el-breadcrumb-item>问卷填写</el-breadcrumb-item>
+                <el-breadcrumb-item>问卷列表</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class="questionaire">
-            <p>问卷</p>
-            <hr>
-            <div class="selector">
-                <div class="protype_selector">
-                    <el-select v-model="pro_type.value" placeholder="请选择问卷" @change="sendProType()">
-                        <el-option v-for="item in pro_type.opts" :key="item.value" :label="item.label" :value="item.value">
-                        </el-option>
-                    </el-select>
-                </div>
-                <!--<div class="prosales_selector" >
-                    <el-select v-model="pro_sales.value" placeholder="请选择产品型号" :disabled="pro_sales_disable">
-                        <el-option v-for="item in pro_sales.opts" :key="item.value" :label="item.label" :value="item.value">
-                        </el-option>
-                    </el-select>
-                </div>-->
-            </div>
-            <div class='questionbox' v-show="display_box">
-                <form id="questions">
-                    <div class="single_question" v-for="(a,index) in answ_data.answers">
-                        <p style="margin-bottom:10px">{{a.question}}</p>
-                        <div class="answer" v-if="ques_data.questions[index].questiontype=='single'">
-                            <label class="left_radio"><el-radio class="radio" v-model="a.answer" label="1">是</el-radio></label>
-                            <el-radio class="radio" v-model="a.answer" label="2">否 </el-radio>
-                        </div>
-                        <div class="essay-answer" v-else-if="ques_data.questions[index].questiontype=='essay'">
-                            <el-input type="textarea" :row="3" placeholder="请输入内容" v-model="a.answer" resize=none></el-input>
+        <div class="questionnaire">
+            <div class="my-container">
+                <div class="survey-wrapper clearfix">
+                    <div class="survey-left pull-left">
+                        <div id="search" class="search pull-left">
+                            <input name="txtName" type="text" id="txtName" class="searchbox" onfocus="if(value=='请输入问卷名进行搜索'){value='';}" onblur="if(value==''){value='请输入问卷名进行搜索’；}" value="请输入问卷名进行搜索" onkeypress="return searchQ(event);"/>
+                            <input type="submit" name="btnSub" id="btnSub" class="search-icon"/>
                         </div>
                     </div>
-                </form>
-                <div class="submit_btn">
-                    <el-button type="primary" @click="sendQuestionaire()">提交问卷</el-button>
                 </div>
             </div>
+
+            <!--<p>问卷列表</p>-->
+            <!--<hr>-->
+            <!--<div class="selector">-->
+                <!--<div class="protype_selector">-->
+                    <!--<el-select v-model="pro_type.value" placeholder="请选择问卷" @change="sendProType()">-->
+                        <!--<el-option v-for="item in pro_type.opts" :key="item.value" :label="item.label" :value="item.value">-->
+                        <!--</el-option>-->
+                    <!--</el-select>-->
+                <!--</div>-->
+                <!--&lt;!&ndash;<div class="prosales_selector" >-->
+                    <!--<el-select v-model="pro_sales.value" placeholder="请选择产品型号" :disabled="pro_sales_disable">-->
+                        <!--<el-option v-for="item in pro_sales.opts" :key="item.value" :label="item.label" :value="item.value">-->
+                        <!--</el-option>-->
+                    <!--</el-select>-->
+                <!--</div>&ndash;&gt;-->
+            <!--</div>-->
+            <!--<div class='questionbox' v-show="display_box">-->
+                <!--<form id="questions">-->
+                    <!--<div class="single_question" v-for="(a,index) in answ_data.answers">-->
+                        <!--<p style="margin-bottom:10px">{{a.question}}</p>-->
+                        <!--<div class="answer" v-if="ques_data.questions[index].questiontype=='single'">-->
+                            <!--<label class="left_radio"><el-radio class="radio" v-model="a.answer" label="1">是</el-radio></label>-->
+                            <!--<el-radio class="radio" v-model="a.answer" label="2">否 </el-radio>-->
+                        <!--</div>-->
+                        <!--<div class="essay-answer" v-else-if="ques_data.questions[index].questiontype=='essay'">-->
+                            <!--<el-input type="textarea" :row="3" placeholder="请输入内容" v-model="a.answer" resize=none></el-input>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</form>-->
+                <!--<div class="submit_btn">-->
+                    <!--<el-button type="primary" @click="sendQuestionaire()">提交问卷</el-button>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
      
          
@@ -272,11 +283,55 @@
 #questions{
     margin-left: 30px;
 }
-.questionaire p{
+.questionnaire {
+    position: relative;
+}
+.my-container {
+    width: 964px;
+    margin: 0 auto;
+}
+.survey-wrapper {
+    position: relative;
+    margin: 40px 0;
+}
+.clearfix {
+    zoom: 1;
+}
+.survey-left {
+    width: 890px;
+}
+.pull-left {
+    float: left !important;
+}
+.search {
+    position: relative;
+}
+input {
+    width: 300px;
+    height: 36px;
+    line-height: 1.6;
+    padding: 8px 0 8px 16px;
+    font-size: 12px;
+    color: #b2b2b2;
+    border-radius: 100px;
+    border: 1px solid #30a6f5;
+}
+.search-icon {
+    position: absolute;
+    top: 8px;
+    right: 11px;
+    width: 25px;
+    height: 20px;
+    margin: 0;
+    border: none;
+    cursor: pointer;
+    background: url("https://www.wjx.cn/images/newimg/pic-1/search.png") no-repeat center;
+}
+.questionnaire p{
     font-size: 18px;
     margin-top: 30px;
 }
-.questionaire hr{
+.questionnaire hr{
     width: 72.7%;
 }
 .left_radio{

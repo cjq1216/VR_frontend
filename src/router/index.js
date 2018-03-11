@@ -216,11 +216,11 @@ export default new Router({
                     component: resolve => require(['../components/page/AdministratorEncyclopediaDelete.vue'], resolve)
                 },
                 {
-                    path: '/admin/Questionnairelist',
+                    path: '/admin/adminQuestionnairelist',
                     component: resolve => require(['../components/page/adminQuestionnaireList.vue'],resolve)
                 },
                 {
-                    path: '/admin/Questionnairelist/creater',
+                    path: '/admin/adminQuestionnaireCreater',
                     component: resolve => require(['../components/page/adminQuestionnaireCreater.vue'],resolve)
                 },
                 {
