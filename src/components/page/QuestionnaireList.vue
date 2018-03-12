@@ -26,8 +26,8 @@
                 <li class="quest-item" v-for="quest in questList" @click="questClick(quest)">
                     <a href="javascript:void(0);" class="link-tit" title="">
                         <span class="quest-name">{{quest.q_name}}</span>
-                        <span class="quest-num">答卷：{{quest.q_num}}</span>
                     </a>
+                    <span class="quest-num">已作答人数：{{quest.q_num}}</span>
                 </li>
             </ul>
 
@@ -73,11 +73,11 @@
     export default {
         data: function(){
             return {
-                activeName2: 'first',
+                //activeName2: 'first',
                 allowSubmit:true,
                 hostURL:"/VR",
-                uid:"1",
-                display_box:false,
+                //uid:"1",
+                //display_box:false,
                 questList:[
                     {
                         q_id:1,
@@ -237,7 +237,7 @@
                 var self=this;
                 console.log("go to questionnaierdetail!");
                 console.log(quest);
-                self.$router.push('/user/questionnairedetail?'+quest.q_id);
+                self.$router.push('/user/questionnairedetail?'+quest.q_id+'#'+quest.q_name);
             }
             // getData(id){
             //     var self = this;
@@ -393,11 +393,9 @@ ul {
     -webkit-margin-after: 1em;
     -webkit-margin-start: 0px;
     -webkit-margin-end: 0px;
-    -webkit-padding-start: 40px;
 }
 li {
     list-style-type:none;
-    padding-bottom:10px;
     border-bottom: 1px solid #ccc;
 }
 a {
