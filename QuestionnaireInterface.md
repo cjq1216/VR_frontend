@@ -8,10 +8,10 @@
 
 ### 问卷表
 
- 问卷id | 问卷名 | 可用性 | 总作答人数  
-:------:|:------:|:------:|:----------:
-1 | test 1 | 可用（1） | 18     
-2 | test 2 | 不可用（0） | 13     
+ 问卷id | 问卷名 | 可用性 | 总作答人数 | 问卷描述
+:------:|:------:|:------:|:----------:|:----:
+1 | test 1 | 可用（1） | 18 | 这是问卷test1    
+2 | test 2 | 不可用（0） | 13 | 这是问卷test2
 
 ### 题目表
 
@@ -97,12 +97,12 @@
 ### 提交作答结果
 每成功执行一次此方法，对应题目的“总作答人数”+1。若是单选/多选题，则作答表添加一条记录且题目表中选项所对应的“选择人数”+1；若是问答题，则新添加一条记录。
 
-    入参（问卷id q_id:int，题目id e_id:int，选项 e_sel:string，回答内容 e_con:string）
+    入参（问卷id q_id:int，题目id e_id:int，选项 e_sel:string，回答内容 e_con:string，用户名 u_name:string，用户IP u_ip:string）
     
     出参（成功1/失败0）
     
 ### 创建/更新问卷
-    入参（问卷id q_id:int，问卷名 q_name:string，可用性 q_ava:int，题目id e_id:int，题目类型 e_type:int，题目 e_tit:string，选项 e_sel:string）
+    入参（问卷id q_id:int，问卷名 q_name:string，问卷描述 q_desc:string，可用性 q_ava:int，题目id e_id:int，题目类型 e_type:int，题目 e_tit:string，选项 e_sel:string）
     
     出参（成功1/失败0）
     
@@ -110,3 +110,8 @@
     入参（问卷id q_id:int）
     
     出参（成功1/失败0）
+
+### 查询问卷作答情况
+    入参（问卷id q_id:int)
+    
+    出参（问卷id，问卷名，题目id，题目类型，题目，选项，选择人数，回答内容，总回答人数）
