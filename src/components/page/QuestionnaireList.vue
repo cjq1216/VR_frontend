@@ -17,8 +17,20 @@
                     </div>
                 </div>
             </div>
+            <br />
+            <br />
+            <div class="survey-folder"></div>
 
             <!--<p>问卷列表</p>-->
+            <ul class="quest-list">
+                <li class="quest-item" v-for="quest in questList" @click="questClick(quest)">
+                    <a href="javascript:void(0);" class="link-tit" title="">
+                        <span class="quest-name">{{quest.q_name}}</span>
+                    </a>
+                    <span class="quest-num">已作答人数：{{quest.q_num}}</span>
+                </li>
+            </ul>
+
             <!--<hr>-->
             <!--<div class="selector">-->
                 <!--<div class="protype_selector">-->
@@ -61,51 +73,72 @@
     export default {
         data: function(){
             return {
-                activeName2: 'first',
+                //activeName2: 'first',
                 allowSubmit:true,
                 hostURL:"/VR",
-                uid:"1",
-                display_box:false,
-                ques_data:{
-                    questions:[{
-                        id:1,
-                        question:"1.你是谁？",
-                        questiontype:"single"
-                    },{
-                        id:3,
-                        question:"3.你对某个产品有什么建议？",
-                        questiontype:"essay"
-                    }]
-                },
-                answ_data:{
-                    answers:[{
-                        question:1,
-                        user:self.uid,
-                        answer:"1",
-                        producttype:"",
-                        productname:""
-                    },{
-                        question:3,
-                        user:self.uid,
-                        answer:"",
-                        producttype:"",
-                        productname:""
-                    }]
-                },
+                //uid:"1",
+                //display_box:false,
+                questList:[
+                    {
+                        q_id:1,
+                        q_name:'问卷1',
+                        q_ava:1,
+                        q_num:20,
+                    },
+                    {
+                        q_id:2,
+                        q_name:'问卷2',
+                        q_ava:1,
+                        q_num:18,
+                    },
+                    {
+                        q_id:3,
+                        q_name:'问卷3',
+                        q_ava:1,
+                        q_num:22,
+                    },
+                ],
 
-                pro_type:{
-                    opts: [{
-                        value: 'AllInOnePc',
-                        label: '一体机'
-                        }, {
-                        value: 'PcheadSet',
-                        label: 'PC头显'
-                        }, {
-                        value: 'MobileBox',
-                        label: '手机盒子'
-                        }], 
-                        value: ''
-                },
+                // ques_data:{
+                //     questions:[{
+                //         id:1,
+                //         question:"1.你是谁？",
+                //         questiontype:"single"
+                //     },{
+                //         id:3,
+                //         question:"3.你对某个产品有什么建议？",
+                //         questiontype:"essay"
+                //     }]
+                // },
+                // answ_data:{
+                //     answers:[{
+                //         question:1,
+                //         user:self.uid,
+                //         answer:"1",
+                //         producttype:"",
+                //         productname:""
+                //     },{
+                //         question:3,
+                //         user:self.uid,
+                //         answer:"",
+                //         producttype:"",
+                //         productname:""
+                //     }]
+                // },
+                //
+                // pro_type:{
+                //     opts: [{
+                //         value: 'AllInOnePc',
+                //         label: '一体机'
+                //         }, {
+                //         value: 'PcheadSet',
+                //         label: 'PC头显'
+                //         }, {
+                //         value: 'MobileBox',
+                //         label: '手机盒子'
+                //         }],
+                //         value: ''
+                // },
                 // pro_sales:{
                 //     opts: [{
                 //         value: '',
@@ -183,81 +216,102 @@
                         break;
                 }
             },
-            getData(id){
+            getQuest(){
                 var self = this;
-                self.ques_data.questions=[];
-                self.answ_data.answers=[];
-                self.pro_type.opts=[];
+                //self.questList=[];
                 self.$axios({
-                    url:'/Question',
-                    method:'get',
-                    baseURL: self.hostURL
-                }).then((response)=>{
-                    console.log(response.data);
-                    self.pro_type.opts=[];
-                    for(var i=0;i<response.data.length;i++){
-                        self.pro_type.opts.push({value:response.data[i],label:response.data[i]});
-                    }
-                }).catch((error)=>{
-                    console.log(error);
-                });
-            },
-            sendQuestionaire(){
-                var self = this;
-                var send=true;
-                for(var i=0;i<self.answ_data.answers.length;i++){
-                    if(self.answ_data.answers[i].answer==""){
-                        send=false;
-                        break;
-                    }
-                }
-                if(send&&self.pro_type.value!=""){
-                    for(var i=0;i<self.answ_data.answers.length;i++){
-                        self.answ_data.answers[i].producttype=self.pro_type.value;
-                        // self.answ_data.answers[i].productname=self.pro_sales.value;
-                    }
-                    
-                    self.$axios({
-                        url:'/Answer',
-                        method:'post',
-                        baseURL: self.hostURL,
-                        data: self.answ_data.answers
-                    }).then((response)=>{
-                        localStorage.setItem('pro_type',self.pro_type.value);
-                        // localStorage.setItem('pro_sale',self.pro_sales.value);
-                        self.$router.replace('/user/questionaire/statistic');
-                    }).catch((error)=>{
-                        console.log(error);
-                    });
-                }else{
-                    self.$message('还有内容未填写！');
-                }
-                
-            },
-            
-            sendProType(){
-                var self=this;
-                self.ques_data.questions=[];
-                self.answ_data.answers=[];
-                self.$axios({
-                    url:'/Question/type?type='+self.pro_type.value,
+                    url:'/getAllQuestionnaire',
                     method:'get',
                     baseURL:self.hostURL
-                }).then(response=>{
-                    self.ques_data.questions= response.data;
-                    self.answ_data.answers=[];
-                    for(var i=0;i<self.ques_data.questions.length;i++){
-                        self.answ_data.answers.push({
-                            question:self.ques_data.questions[i].question,
-                            user:localStorage.getItem('ms_userid'),
-                            answer:"",
-                            producttype:""
-                        })
-                    }
-                    self.display_box=true;
+                }).then((response)=>{
+                    self.questList = [];
+                    self.questList= response.data;
+                }).catch((error)=>{
+                    self.$message({
+                        type:'info',
+                        message:'connect fail'
+                    });
                 });
+            },
+            questClick(quest){
+                var self=this;
+                console.log("go to questionnaierdetail!");
+                console.log(quest);
+                self.$router.push('/user/questionnairedetail?'+quest.q_id+'#'+quest.q_name);
             }
-
+            // getData(id){
+            //     var self = this;
+            //     self.ques_data.questions=[];
+            //     self.answ_data.answers=[];
+            //     self.pro_type.opts=[];
+            //     self.$axios({
+            //         url:'/Question',
+            //         method:'get',
+            //         baseURL: self.hostURL
+            //     }).then((response)=>{
+            //         console.log(response.data);
+            //         self.pro_type.opts=[];
+            //         for(var i=0;i<response.data.length;i++){
+            //             self.pro_type.opts.push({value:response.data[i],label:response.data[i]});
+            //         }
+            //     }).catch((error)=>{
+            //         console.log(error);
+            //     });
+            // },
+            // sendQuestionaire(){
+            //     var self = this;
+            //     var send=true;
+            //     for(var i=0;i<self.answ_data.answers.length;i++){
+            //         if(self.answ_data.answers[i].answer==""){
+            //             send=false;
+            //             break;
+            //         }
+            //     }
+            //     if(send&&self.pro_type.value!=""){
+            //         for(var i=0;i<self.answ_data.answers.length;i++){
+            //             self.answ_data.answers[i].producttype=self.pro_type.value;
+            //             // self.answ_data.answers[i].productname=self.pro_sales.value;
+            //         }
+            //
+            //         self.$axios({
+            //             url:'/Answer',
+            //             method:'post',
+            //             baseURL: self.hostURL,
+            //             data: self.answ_data.answers
+            //         }).then((response)=>{
+            //             localStorage.setItem('pro_type',self.pro_type.value);
+            //             // localStorage.setItem('pro_sale',self.pro_sales.value);
+            //             self.$router.replace('/user/questionaire/statistic');
+            //         }).catch((error)=>{
+            //             console.log(error);
+            //         });
+            //     }else{
+            //         self.$message('还有内容未填写！');
+            //     }
+            //
+            // },
+            // sendProType(){
+            //     var self=this;
+            //     self.ques_data.questions=[];
+            //     self.answ_data.answers=[];
+            //     self.$axios({
+            //         url:'/Question/type?type='+self.pro_type.value,
+            //         method:'get',
+            //         baseURL:self.hostURL
+            //     }).then(response=>{
+            //         self.ques_data.questions= response.data;
+            //         self.answ_data.answers=[];
+            //         for(var i=0;i<self.ques_data.questions.length;i++){
+            //             self.answ_data.answers.push({
+            //                 question:self.ques_data.questions[i].question,
+            //                 user:localStorage.getItem('ms_userid'),
+            //                 answer:"",
+            //                 producttype:""
+            //             })
+            //         }
+            //         self.display_box=true;
+            //     });
+            // }
         },
         mounted(){
             var self= this;
@@ -268,7 +322,8 @@
             // var arr = location.href.split('?');
             // var id = arr[1];
             // console.log(id);
-            self.getData();
+            //self.getData();
+            self.getQuest();
         }
     }
 </script>
@@ -308,17 +363,17 @@
 }
 input {
     width: 300px;
-    height: 36px;
+    height: 25px;
     line-height: 1.6;
     padding: 8px 0 8px 16px;
-    font-size: 12px;
+    font-size: 13px;
     color: #b2b2b2;
     border-radius: 100px;
     border: 1px solid #30a6f5;
 }
 .search-icon {
     position: absolute;
-    top: 8px;
+    top: 11px;
     right: 11px;
     width: 25px;
     height: 20px;
@@ -326,6 +381,55 @@ input {
     border: none;
     cursor: pointer;
     background: url("https://www.wjx.cn/images/newimg/pic-1/search.png") no-repeat center;
+}
+.survey-folder {
+    margin: 20px 0;
+    border-top: 2px solid #f5f7fa;
+}
+ul {
+    list-style: none;
+    display: block;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+}
+li {
+    list-style-type:none;
+    border-bottom: 1px solid #ccc;
+}
+a {
+    text-decoration: none;
+}
+.quest-item{
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+.quest-list .quest-item .link-tit {
+    color: #e9c06c;
+}
+.quest-list .quest-item img{
+    display: block;
+    float:left;
+    margin-right: 20px;
+    width:200px;
+
+}
+.quest-list .quest-item .quest-name{
+    font-size: 22px;
+    font-weight: lighter;
+    color: #3e3e3e;
+    line-height: 50px;
+    height: 50px;
+    overflow: hidden;
+}
+.quest-list .quest-item .quest-num {
+    float: right;
+    height: 60px;
+    overflow: hidden;
+    font-size: 14px;
+    color: #898989;
+    line-height: 1.5;
 }
 .questionnaire p{
     font-size: 18px;

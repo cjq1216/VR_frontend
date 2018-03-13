@@ -143,8 +143,8 @@
                         title: '满意度调查',
                         subs: [
                             {
-                                index: '/user/questionaire',
-                                title: '问卷填写'
+                                index: '/user/questionnairelist',
+                                title: '问卷列表'
                             }
                         ]
                     },

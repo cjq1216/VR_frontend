@@ -38,7 +38,7 @@
                         <div class="my-comment">
                             <el-input type="textarea" :rows="3" placeholder="请输入您对该产品的评价" v-model.trim="textarea" resize=none>
                                 
-                            </style>>
+
                             </el-input>
                         </div>
                         <div class="comment-btn">
@@ -120,9 +120,6 @@
               </div>
             </div>
         </div>
-       
-         
-    </div>
 </template>
 
 <script>
