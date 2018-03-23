@@ -82,7 +82,7 @@
                     },
                     {
                         icon: 'el-icon-menu',
-                        index: '/admin/Questionaire',
+                        index: '/admin/adminQuestionnairelist',
                         title: '问卷管理'
                     },
                     {

@@ -220,7 +220,7 @@
                 var self = this;
                 //self.questList=[];
                 self.$axios({
-                    url:'/getAllQuestionnaire',
+                    url:'/question/getAlLQuestionaire',
                     method:'get',
                     baseURL:self.hostURL
                 }).then((response)=>{
@@ -235,9 +235,9 @@
             },
             questClick(quest){
                 var self=this;
-                console.log("go to questionnaierdetail!");
+                console.log("go to QuestionnaierDetail!");
                 console.log(quest);
-                self.$router.push('/user/questionnairedetail?'+quest.q_id+'#'+quest.q_name);
+                self.$router.push('/user/questionnairedetail?'+quest.q_id+'#'+quest.q);
             }
             // getData(id){
             //     var self = this;
