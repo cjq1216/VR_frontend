@@ -8,7 +8,6 @@
         </div>
         <div class="questionnaire-box">
             <div class="questionnaire-title">{{q_name}}</div>
-            <br />
 
 
             <!--<hr>-->
@@ -46,9 +45,45 @@
             <!--</div>-->
 
         </div>
+        <br/>
+
+        <div class="question">
+            <form id="questions">
+                <div class="quest" v-for="(a,index) in answer" >
+                    <div :id="a.e_id">
+                        <h4>{{a.e_id}}.&nbsp;{{examsData[index].question}}</h4>
+                        <div class="single" v-if="examsData[index].type===1">
+                            <div v-for="tmpExam in examsData">
+                                <div v-if="tmpExam.questionId===a.e_id">
+                                    <input style="width: 20px;" type="radio" :value="tmpExam.choices" :name="a.e_id">&nbsp;{{tmpExam.choices}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="plural" v-if="examsData[index].type===2">
+                            <div v-for="tmpExam in examsData">
+                                <div v-if="tmpExam.questionId===a.e_id">
+                                    <input style="width: 20px;" type="checkbox" :value="tmpExam.choices" :name="a.e_id">&nbsp;{{tmpExam.choices}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="essay" v-if="examsData[index].type===3">
+                            <br/>
+                            <textarea rows="4" cols="50" v-model="a.e_con" placeholder="请输入内容"></textarea>
+                        </div>
+                    </div>
+                    <br/>
+                </div>
+            </form>
+            <div class="submit_btn">
+            <el-button type="primary" @click="sendQuestionaire()">提交问卷</el-button>
+            </div>
+
+
+        </div>
 
     </div>
 </template>
+
 
 <script>
     export default {
@@ -58,58 +93,68 @@
                 q_name:'test',
                 examsData:[
                     {
+                        questionId:1,
+                        type:1,
+                        question:'这是一道单选题',
+                        choices:'A选项',
+                    },
+                    {
+                        questionId:1,
+                        type:1,
+                        question:'这是一道单选题',
+                        choices:'A选项',
+                    },
+                    {
+                        questionId:1,
+                        type:1,
+                        question:'这是一道单选题',
+                        choices:'A选项',
+                    },
+                    {
+                        questionId:2,
+                        type:2,
+                        question:'这是一道多选题',
+                        choices:'A选项',
+                    },
+                    {
+                        questionId:2,
+                        type:2,
+                        question:'这是一道多选题',
+                        choices:'B选项',
+                    },
+                    {
+                        questionId:2,
+                        type:2,
+                        question:'这是一道多选题',
+                        choices:'C选项',
+                    },
+                    {
+                        questionId:3,
+                        type:3,
+                        question:'这是一道问答题',
+                        choices:'',
+                    },
+                    {
+                        questionId:4,
+                        type:3,
+                        question:'这是一道问答题',
+                        choices:'',
+                    },
+                ],
+                answer:[
+                    {
+                        q_id:1,
                         e_id:1,
-                        e_type:1,
-                        e_tit:'这是一道单选题',
-                        e_sel:'A选项',
+                        e_sel:'A',
+                        e_con:'lalala',
+                        u_name:localStorage.getItem('ms_username'),
+                        u_ip:'1.1.1.1',
                     },
-                    {
-                        e_id:1,
-                        e_type:1,
-                        e_tit:'这是一道单选题',
-                        e_sel:'B选项',
-                    },
-                    {
-                        e_id:1,
-                        e_type:1,
-                        e_tit:'这是一道单选题',
-                        e_sel:'C选项',
-                    },
-                    {
-                        e_id:2,
-                        e_type:2,
-                        e_tit:'这是一道多选题',
-                        e_sel:'A选项',
-                    },
-                    {
-                        e_id:2,
-                        e_type:2,
-                        e_tit:'这是一道多选题',
-                        e_sel:'B选项',
-                    },
-                    {
-                        e_id:2,
-                        e_type:2,
-                        e_tit:'这是一道多选题',
-                        e_sel:'C选项',
-                    },
-                    {
-                        e_id:3,
-                        e_type:3,
-                        e_tit:'这是一道问答题',
-                        e_sel:'',
-                    },
-                    {
-                        e_id:4,
-                        e_type:3,
-                        e_tit:'这是一道问答题',
-                        e_sel:'',
-                    },
-                ]
+                ],
             }
         },
 
-        mothed:{
+        methods:{
             codeParsing(code) {
                 let self = this;
                 var msg = (err_title, err_message)=> {
@@ -175,27 +220,71 @@
                         break;
                 }
             },
-            getData(str){
+            getData(q_id){
                 var self = this;
                 //self.questList=[];
                 self.$axios({
-                    url:'/getExamsById' + str,
-                    method:'get',
-                    baseURL:self.hostURL
+                    url:'/question/getQuestions',
+                    method:'post',
+                    baseURL:self.hostURL,
+                    data:{
+                        q_id:q_id,
+                    }
                 }).then((response)=>{
                     self.examsData = [];
                     self.examsData= response.data;
+                    self.answer = [];
+                    //console.log(returnCitySN["cip"]+','+returnCitySN["cname"]);
+                    for(var i=0;i<self.examsData.length;i++){
+                        self.answer.push({
+                            q_id:q_id,
+                            e_id:self.examsData[i].questionId,
+                            u_name:localStorage.getItem('ms_username'),
+                            e_sel:self.examsData[i].choices,
+                            e_con:'',
+                            u_ip:'1.1.1.1',
+                        })
+                    };
                 }).catch((error)=>{
                     self.$message({
                         type:'info',
-                        message:'connect fail'
+                        message:'无法获取问卷，请重试'
                     });
                 });
             },
-            getQuest(str){
+
+            sendQuestionaire(){
                 var self = this;
-                self.q_name = str;
-            }
+                var send=true;
+                for(var i=0;i<self.answer.length;i++){
+                    if(self.answer[i].answer==""){
+                        send=false;
+                        break;
+                    }
+                }
+                if(send){
+                    for(var i=0;i<self.answer.length;i++){
+                        self.answer[i].u_name=localStorage.getItem('ms_username');
+                        self.answer[i].u_ip='1.1.1.2';
+                    }
+                    console.log(self.answer);
+                    self.$axios({
+                        url:'/question/giveAnswer',
+                        method:'post',
+                        baseURL: self.hostURL,
+                        data: self.answer
+                    }).then((response)=>{
+                        //localStorage.setItem('pro_type',self.pro_type.value);
+                        // localStorage.setItem('pro_sale',self.pro_sales.value);
+                        self.$router.replace('/user/questionnairelist');
+                    }).catch((error)=>{
+                        console.log(error);
+                    });
+                }else{
+                    self.$message('还有内容未填写！');
+                }
+            },
+
         },
 
         mounted(){
@@ -204,13 +293,15 @@
             if(user_name==""){
                 this.$router.replace('/login');
             }
-            var arr1 = location.href.split('?');
-            var arr2 = location.href.split('#');
-            var q_id = arr1[1];
-            var q_name = arr2[1];
+            var tmp1 = location.href.split('?');
+            var tmp2 = tmp1[1].split('&');
+            var q_id = tmp2[0];
+            self.q_name = tmp2[1];
             console.log(q_id);
+            console.log(self.q_name);
             self.getData(q_id);
-            self.getQuest(q_name);
+            //console.log(examsData);
+            //self.getQuest(q_name);
         },
 
         name: "questionnaire-detail"

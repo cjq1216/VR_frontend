@@ -76,25 +76,33 @@
 ## 接口
  
 ### 查看所有问卷
+/question/getAlLQuestionaire
+
 可用性即问卷的开启和关闭使用。
 
     入参（）
 
-    出参（问卷id，问卷名，可用性，总回答人数）
+    出参（问卷id:id，问卷名:name，可用性:activated，总回答人数:number，描述:description）
     
 ### 搜索问卷
+/question/getQuestionaire
+
 通过问卷名模糊搜索。
 
     入参（问卷名的局部全部 q_name_part:string）
     
-    出参（问卷id，问卷名，可用性，总回答人数）
+    出参（问卷id:id，问卷名:name，可用性:activated，总回答人数:number，描述:description）
 
 ### 根据问卷id找出所有题目
+/question/getQuestions
+
     入参（问卷id q_id:int）
     
-    出参（题目id，题目类型，题目，选项）
+    出参（题目id:questionId，题目类型:type，题目:question，选项:choices）
     
 ### 提交作答结果
+/question/giveAnswer
+
 每成功执行一次此方法，对应题目的“总作答人数”+1。若是单选/多选题，则作答表添加一条记录且题目表中选项所对应的“选择人数”+1；若是问答题，则新添加一条记录。
 
     入参（问卷id q_id:int，题目id e_id:int，选项 e_sel:string，回答内容 e_con:string，用户名 u_name:string，用户IP u_ip:string）
@@ -102,16 +110,24 @@
     出参（成功1/失败0）
     
 ### 创建/更新问卷
+/question/createQuestionaire
+
+/question/updateQuestionaire
+
     入参（问卷id q_id:int，问卷名 q_name:string，问卷描述 q_desc:string，可用性 q_ava:int，题目id e_id:int，题目类型 e_type:int，题目 e_tit:string，选项 e_sel:string）
     
     出参（成功1/失败0）
     
 ### 删除问卷
+/question/deleteQuestionaire
+
     入参（问卷id q_id:int）
     
     出参（成功1/失败0）
 
 ### 查询问卷作答情况
+/question/getAnswers
+
     入参（问卷id q_id:int)
     
-    出参（问卷id，问卷名，题目id，题目类型，题目，选项，选择人数，回答内容，总回答人数）
+    出参（问卷id:questionaireId，问卷名:questionaireName，题目id:quesitonId，题目类型:type，题目:qusetion，选项:choice，选择人数:ansNum，回答内容:ansContent，总回答人数:allAnsNum）

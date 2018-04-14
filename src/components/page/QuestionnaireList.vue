@@ -24,10 +24,13 @@
             <!--<p>问卷列表</p>-->
             <ul class="quest-list">
                 <li class="quest-item" v-for="quest in questList" @click="questClick(quest)">
-                    <a href="javascript:void(0);" class="link-tit" title="">
-                        <span class="quest-name">{{quest.q_name}}</span>
-                    </a>
-                    <span class="quest-num">已作答人数：{{quest.q_num}}</span>
+                    <div v-if="quest.activated === 1" id="{{quest.id}}">
+                        <a href="javascript:void(0);" class="link-tit" title="">
+                            <span class="quest-name">{{quest.name}}</span>
+                        </a>
+                        <span class="quest-num">已作答人数：{{quest.number}}</span>
+                        <div><span>{{quest.description}}</span></div>
+                    </div>
                 </li>
             </ul>
 
@@ -80,22 +83,22 @@
                 //display_box:false,
                 questList:[
                     {
-                        q_id:1,
-                        q_name:'问卷1',
-                        q_ava:1,
-                        q_num:20,
+                        id:1,
+                        name:'问卷1',
+                        activated:1,
+                        number:20,
                     },
                     {
-                        q_id:2,
-                        q_name:'问卷2',
-                        q_ava:1,
-                        q_num:18,
+                        id:2,
+                        name:'问卷2',
+                        activated:1,
+                        number:20,
                     },
                     {
-                        q_id:3,
-                        q_name:'问卷3',
-                        q_ava:1,
-                        q_num:22,
+                        id:3,
+                        name:'问卷3',
+                        activated:1,
+                        number:20,
                     },
                 ],
 
@@ -226,6 +229,7 @@
                 }).then((response)=>{
                     self.questList = [];
                     self.questList= response.data;
+                    //console.log(questList);
                 }).catch((error)=>{
                     self.$message({
                         type:'info',
@@ -236,8 +240,8 @@
             questClick(quest){
                 var self=this;
                 console.log("go to QuestionnaierDetail!");
-                console.log(quest);
-                self.$router.push('/user/questionnairedetail?'+quest.q_id+'#'+quest.q);
+                console.log(quest.id);
+                self.$router.push('/user/questionnairedetail?'+quest.id+'&'+quest.name);
             }
             // getData(id){
             //     var self = this;
