@@ -17,20 +17,20 @@
                 <el-col :span="24" style="height: 50px">
                     <div class="grid-content bg-purple-dark">
                         <span class="quest-name">{{quest.name}}</span>
-                        <span class="quest-id">   ID：{{quest.id}}</span>
+                        <span class="quest-id">&nbsp;&nbsp;&nbsp;ID：{{quest.id}}</span>
                         <span class="quest-num">答卷：{{quest.number}}</span>
                     </div>
                 </el-col>
-            <el-row>
                 <el-col :span="24">
                     <div class="grid-content bg-purple-light">
-                        <el-button class="mybtn" type="primary">编辑问卷</el-button>
-                        <el-button class="mybtn" type="primary">数据分析</el-button>
+                        <el-button class="mybtn" type="primary" icon="el-icon-edit" @click="goToEditor(quest)">编辑问卷</el-button>
+                        <el-button class="mybtn" type="primary" icon="el-icon-search" @click="goToAnalyze(quest)">数据分析</el-button>
+                        <el-button class="mybtn" type="danger" icon="el-icon-delete" @click="deleteQuest(quest)"></el-button>
+                        <el-switch v-model="quest.activated" active-color="#13ce66" inactive-color="#ff4949" active-text="开启" inactive-text="停止" active-value="1" inactive-value="0" @change="questSwitch(quest,$event)" style="float: right;margin-top: 18px;"></el-switch>
                     </div>
                 </el-col>
             </el-row>
-                <br />
-            </el-row>
+            <br />
 
         </div>
 
@@ -49,19 +49,19 @@
                     {
                         id:1,
                         name:'问卷1',
-                        activated:1,
+                        activated:'1',
                         number:20,
                     },
                     {
                         id:2,
                         name:'问卷2',
-                        activated:1,
+                        activated:'0',
                         number:20,
                     },
                     {
                         id:3,
                         name:'问卷3',
-                        activated:1,
+                        activated:'1',
                         number:20,
                     },
                 ],
@@ -134,6 +134,7 @@
                         break;
                 }
             },
+
             getQuest(){
                 var self = this;
                 //self.questList=[];
@@ -142,9 +143,18 @@
                     method:'get',
                     baseURL:self.hostURL
                 }).then((response)=>{
+                    console.log(response.data);
                     self.questList = [];
-                    self.questList= response.data;
-                    //console.log(questList);
+                    for (var i=0;i<response.data.length;i++) {
+                        var item = {}
+                        item.activated = response.data[i].activated + '';
+                        item.description = response.data[i].description;
+                        item.id = response.data[i].id;
+                        item.name = response.data[i].name;
+                        item.number = response.data[i].number;
+                        self.questList.push(item);
+                    }
+                    console.log(self.questList);
                 }).catch((error)=>{
                     self.$message({
                         type:'info',
@@ -152,13 +162,72 @@
                     });
                 });
             },
-            goToCreater(quest){
+
+            questSwitch(quest,$event){
+                var self = this;
+                console.log(quest.id);
+                console.log($event);
+                self.$axios({
+                    url:'/question/setQAva',
+                    method:'post',
+                    baseURL:self.hostURL,
+                    data:{
+                        q_id:quest.id,
+                        q_ava:$event,
+                    }
+                });
+            },
+            goToCreater(){
                 var self=this;
                 console.log("go to questionnaierCreater!");
                 self.$router.push('/admin/adminQuestionnaireCreater');
-            }
+            },
+
+            goToEditor(quest){
+                var self = this;
+                console.log("go to QuestionnaierEditor!");
+                console.log(quest.id);
+                self.$router.push('/admin/adminQuestionnaireEditor?'+quest.id);
+            },
+
+            goToAnalyze(quest){
+                var self = this;
+                console.log("go to QuestionnaierAnalyze!");
+                console.log(quest.id);
+                self.$router.push('/admin/adminQuestionnaireAnalyze?'+quest.id);
+            },
+
+            deleteQuest(quest){
+                var self = this;
+                console.log(quest.id);
+                self.$axios({
+                    url:'/question/deleteQuestionaire',
+                    method:'post',
+                    baseURL:self.hostURL,
+                    data:{
+                        q_id:quest.id,
+                    }
+                }).then((response)=>{
+                    if(response.data == 1) {
+                        self.$message({
+                            type:'info',
+                            message:'删除问卷成功！'
+                        })}else{
+                        self.$message({
+                            type:'info',
+                            message:'删除问卷失败！'
+                        })
+                    };
+                }).catch((error)=>{
+                    self.$message({
+                        type:'info',
+                        message:'connect fail'
+                    });
+                });
+            },
 
         },
+
         mounted(){
             var self= this;
             self.getQuest();
@@ -438,130 +507,69 @@
 //    }
 </script>
 
-<style>
-/*@import url("http://unpkg.com/element-ui/lib/theme-chalk/index.css");*/
-.crumbs {
-    text-decoration: none;
-}
-.refresh-btn{
-    margin-top: -39px;
-    float: right;
-    margin-bottom: 10px;
-}
-.survey-folder {
-    margin: 20px 0;
-    border-top: 2px solid #f5f7fa;
-}
-el-row {
-    margin-bottom: 20px;
-}
-el-col {
-    border-radius: 4px;
-}
-.bg-purple-dark {
-    background: #99a9bf;
-}
-.bg-purple {
-    background: #d3dce6;
-}
-.bg-purple-light {
-    background: #e5e9f2;
-}
-.grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-}
-.row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-}
+<style scoped>
+    .crumbs{
+        margin-bottom: 20px;
+    }
+    .refresh-btn{
+        margin-top: -39px;
+        float: right;
+        margin-bottom: 10px;
+    }
+    .survey-folder {
+        margin: 20px 0;
+        border-top: 2px solid #f5f7fa;
+    }
+    /*el-row {*/
+    /*margin-bottom: 20px;*/
+    /*}*/
+    /*el-col {*/
+    /*border-radius: 4px;*/
+    /*}*/
+    .bg-purple-dark {
+        background: #99a9bf;
+    }
 
-.quest-name{
-    font-size: 22px;
-    font-weight: lighter;
-    color: #3e3e3e;
-    line-height: 50px;
-    height: 50px;
-    overflow: hidden;
-    margin-left: 15px;
-}
-.quest-item{
-    margin-bottom: 24px;
-    overflow: hidden;
-}
-.quest-num {
-    float: right;
-    height: 60px;
-    overflow: hidden;
-    font-size: 14px;
-    line-height: 1.5;
-    margin-top: 15px;
-    margin-right: 20px;
-}
-.mybtn {
-    margin-top: 10px;
-    border-top-width: 5px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-bottom-width: 5px;
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
-}
-.content {
-        float: left;
-        width: 70%;
-}
-.switch{
-    margin-left:10px;
-    margin-right:10px;
-}
-.hint{
-    font-size:13px;
-    color:#8492A6;
-    margin-bottom:20px
-}
-#questions{
-    margin-left: 30px;
-}
-.questionbox{
-    padding: 28px;
-    width: 800px;
-    margin-top: 20px;
-}
-.single_question{
-    margin:0 0 10px 0;
-    font-size:17px;
-}
-.answer{
-    width: 100%;
-    padding-left: 15px;
-}
-.radio{
-    width: 100%;
-    display: flex;
-}
-.text{
-     width:20px;   
-}
-.percent{
-    flex: 1;
-    /*margin-left:20px;*/
-}
-.selector{
-    width:700px;
-    margin-top: 20px;
-    display: flex;
-}
-.protype_selector{
-    margin-left:50px;
-    float:left;
-}
-.prosales_selector{
-    margin-left: 40px;
-    flex: 1;
-    
-}
+    .bg-purple-light {
+        background: #e5e9f2;
+    }
+    .grid-content {
+        border-radius: 4px;
+        min-height: 36px;
+    }
+    .row-bg {
+        padding: 10px 0;
+        background-color: #f9fafc;
+    }
+
+    .quest-name{
+        font-size: 22px;
+        color: #3e3e3e;
+        line-height: 50px;
+        height: 50px;
+        overflow: hidden;
+        margin-left: 15px;
+    }
+
+    .quest-num {
+        float: right;
+        height: 60px;
+        overflow: hidden;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-top: 15px;
+        margin-right: 20px;
+    }
+    .mybtn {
+        margin-top: 10px;
+        border-top-width: 5px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-bottom-width: 5px;
+        margin-bottom: 10px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
 </style>

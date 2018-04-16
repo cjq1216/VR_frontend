@@ -49,36 +49,42 @@
 
         <div class="question">
             <form id="questions">
-                <div class="quest" v-for="(a,index) in answer" >
-                    <div :id="a.e_id">
-                        <h4>{{a.e_id}}.&nbsp;{{examsData[index].question}}</h4>
-                        <div class="single" v-if="examsData[index].type===1">
-                            <div v-for="tmpExam in examsData">
-                                <div v-if="tmpExam.questionId===a.e_id">
-                                    <input style="width: 20px;" type="radio" :value="tmpExam.choices" :name="a.e_id">&nbsp;{{tmpExam.choices}}
-                                </div>
+                <div class="quest">
+                    <div v-for="quest in quests">
+                        <div v-if="quest.subs">
+                            <h4>{{quest.e_id}}.&nbsp;{{quest.question}}</h4>
+                            <div class="single" v-if="quest.type===1">
+                                <el-radio-group>
+                                    <div v-for="(choice,i) in quest.subs">
+                                        <el-radio :key="i" :label="choice.choices">{{choice.choices}}</el-radio>
+                                    </div>
+                                </el-radio-group>
+                            </div>
+                            <div class="plural" v-if="quest.type===2">
+                                <el-checkbox-group>
+                                    <div v-for="(choice,i) in quest.subs">
+                                        <el-checkbox :key="i" :label="choice.choices">{{choice.choices}}</el-checkbox>
+                                    </div>
+                                </el-checkbox-group>
                             </div>
                         </div>
-                        <div class="plural" v-if="examsData[index].type===2">
-                            <div v-for="tmpExam in examsData">
-                                <div v-if="tmpExam.questionId===a.e_id">
-                                    <input style="width: 20px;" type="checkbox" :value="tmpExam.choices" :name="a.e_id">&nbsp;{{tmpExam.choices}}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="essay" v-if="examsData[index].type===3">
-                            <br/>
-                            <textarea rows="4" cols="50" v-model="a.e_con" placeholder="请输入内容"></textarea>
+                        <div v-else>
+                            <h4>{{quest.e_id}}.&nbsp;{{quest.question}}</h4>
+                            <el-input
+                                    type="textarea"
+                                    :rows="4"
+                                    :cols="50"
+                                    placeholder="请输入内容"
+                                    v-model="textarea">
+                            </el-input>
                         </div>
                     </div>
-                    <br/>
                 </div>
             </form>
+            <br/>
             <div class="submit_btn">
-            <el-button type="primary" @click="sendQuestionaire()">提交问卷</el-button>
+                <el-button type="primary" @click="sendQuestionaire()">提交问卷</el-button>
             </div>
-
-
         </div>
 
     </div>
@@ -102,13 +108,13 @@
                         questionId:1,
                         type:1,
                         question:'这是一道单选题',
-                        choices:'A选项',
+                        choices:'B选项',
                     },
                     {
                         questionId:1,
                         type:1,
                         question:'这是一道单选题',
-                        choices:'A选项',
+                        choices:'C选项',
                     },
                     {
                         questionId:2,
@@ -141,11 +147,49 @@
                         choices:'',
                     },
                 ],
+                quests:[
+                    {
+                        q_id:1,
+                        e_id:1,
+                        question:'单选题1',
+                        type:1,
+                        subs:[
+                            {choices:'A选项'},
+                            {choices:'B选项'},
+                            {choices:'C选项'}
+                        ],
+                    },
+                    {
+                        q_id:1,
+                        e_id:2,
+                        question:'多选题',
+                        type:2,
+                        subs:[
+                            {choices:'A选项A'},
+                            {choices:'B选项B'},
+                            {choices:'C选项C'}
+                        ],
+                    },
+                    {
+                        q_id:1,
+                        e_id:3,
+                        question:'问答题1',
+                        type:3,
+                    },
+                ],
                 answer:[
                     {
                         q_id:1,
                         e_id:1,
                         e_sel:'A',
+                        e_con:'',
+                        u_name:localStorage.getItem('ms_username'),
+                        u_ip:'1.1.1.1',
+                    },
+                    {
+                        q_id:1,
+                        e_id:2,
+                        e_sel:'',
                         e_con:'lalala',
                         u_name:localStorage.getItem('ms_username'),
                         u_ip:'1.1.1.1',

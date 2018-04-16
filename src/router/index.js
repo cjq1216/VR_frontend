@@ -224,6 +224,14 @@ export default new Router({
                     component: resolve => require(['../components/page/adminQuestionnaireCreater.vue'],resolve)
                 },
                 {
+                    path: '/admin/adminQuestionnaireEditor',
+                    component: resolve => require(['../components/page/adminQuestionnaireEditor.vue'],resolve)
+                },
+                {
+                    path: '/admin/adminQuestionnaireAnalyze',
+                    component: resolve => require(['../components/page/adminQuestionnaireAnalyze.vue'],resolve)
+                },
+                {
                     path: '/admin/User',
                     component: resolve => require(['../components/page/adminUser.vue'],resolve)
                 },

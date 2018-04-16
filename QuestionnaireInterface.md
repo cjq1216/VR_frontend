@@ -131,3 +131,9 @@
     入参（问卷id q_id:int)
     
     出参（问卷id:questionaireId，问卷名:questionaireName，题目id:quesitonId，题目类型:type，题目:qusetion，选项:choice，选择人数:ansNum，回答内容:ansContent，总回答人数:allAnsNum）
+    
+### 设置问卷可用性
+/question/setQAva
+    
+    入参（问卷id：q_id，可用性：q_ava）
+    
