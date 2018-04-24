@@ -3,56 +3,58 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-edit"></i> 百科管理</el-breadcrumb-item>
-                <el-breadcrumb-item>词条审核</el-breadcrumb-item>
+                <el-breadcrumb-item>词条管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <el-row>
-            <el-button class="refresh-btn" type="success" @click="getRequireList()">刷新数据 </el-button>
+            <el-button class="refresh-btn" type="success" @click="getLamaList()">刷新数据 </el-button>
         </el-row>
 
         <template>
-            <el-table
-                    :data="encyclopedia_propchangerequrire"
-                    border
-                    style="width: 100% "
-                    max-height="500"
-                    @row-click='handleRowHandle'
-            >
-
-                <el-table-column prop="requireid" label="请求号" width="120"></el-table-column>
-                <el-table-column prop="keyword" label="词条名" width="300"></el-table-column>
-                <el-table-column prop="prop_keyword" label="词条属性"></el-table-column>
-                <el-table-column
-                        label="操作"
-                        width="100">
+            <h2>用户报错：</h2>
+            <el-table :data="errorList" border style="width: 100% " max-height="300">
+                <el-table-column prop="termName" label="词条名"></el-table-column>
+                <el-table-column prop="errorName" label="报错内容"></el-table-column>
+                <el-table-column prop="username" label="用户名" width="180"></el-table-column>
+                <el-table-column label="操作" width="180">
                     <template scope="scope">
-                        <el-button @click="handleClick" size="small">查看</el-button>
-
+                        <el-button v-if="errorList[scope.$index].handleState===0" type="primary" @click.native.prevent="handleErr(scope.$index, errorList)" size="small">未读</el-button>
+                        <el-button v-else size="small" disabled>已读</el-button>
                     </template>
                 </el-table-column>
-
-
             </el-table>
-            <div class="pagination">
-                <el-pagination
-                        @current-change="handleCurrentChange"
-                        :current-page.sync="pageNum"
-                        layout="prev, next">
-                </el-pagination>
-            </div>
+        </template>
+        <br/>
+        <template>
+            <h2>词条管理：</h2>
+            <el-table :data="lamaList" border style="width: 100% " max-height="500" @row-click='handleRowHandle'>
+                <el-table-column prop="className" label="类别" width="120"></el-table-column>
+                <el-table-column prop="termName" label="词条名"></el-table-column>
+                <el-table-column prop="verifyState" label="审核状态" width="180"></el-table-column>
+                <el-table-column prop="time" label="发布时间" width="210"></el-table-column>
+                <el-table-column
+                        label="操作"
+                        width="300">
+                    <template scope="scope">
+                        <el-button @click="handleClick" size="small">查看</el-button>
+                        <el-button type="primary" @click.native.prevent="editLama(scope.$index, lamaList)" size="small">编辑</el-button>
+                        <el-button type="danger" @click.native.prevent="deleteLama(scope.$index, lamaList)" size="small">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
 
             <div v-show="content_show">
-                <h2 class="content_title"> 内容概述 </h2>
+                <br/>
+                <h2 class="content_title"> 词条内容 </h2>
                 <div style="margin-top:10px;border: 1px solid #A7C942;">
-                    <p class="content_p" style="margin:10px;">{{ message}}</p>
+                    <p class="content_p" style="margin:10px;">{{ termAbstract }}</p>
+                    <p class="content_p" style="margin:10px;">{{ termContent }}</p>
                 </div>
 
                 <br/>
 
                 <div style="float:right">
-
                     <el-button type="success" @click="open1">通过</el-button>
-
                     <el-button type="danger" @click="open2">不通过</el-button>
                 </div>
             </div>
@@ -64,224 +66,251 @@
 </template>
 
 <script>
-
-
     export default {
-
+        name: "lamaMan",
         data: function () {
             return {
                 msg: '',
                 message: "",
-                pageNum: 1,
                 hostURL: '/VR',
                 content_show: false,
-                id: '1',
-                prop_id: "0",
-                keyword: "",
-                prop_keyword: 'VR资讯',
-                content: 'VR资源网产业新闻频道,为您带来最新的VR行业新闻、虚拟现实最新设备资讯、VR投资创业相关资讯。',
-                changenote: "a",
-                encyclopedia_propchangerequrire: [
+                lamaList: [
                     {
-                        requireid: "1",
+                        cId:'1',
+                        className: "简介",
                         id: '1',
-                        prop_id: "0",
-                        keyword: "",
-                        prop_keyword: 'VR资讯',
-                        content: 'VR资源网产业新闻频道,为您带来最新的VR行业新闻、虚拟现实最新设备资讯、VR投资创业相关资讯。',
-                        changenote: "a"
+                        termName: "简介1",
+                        termAbstract:"简介1的简介",
+                        termContent:"简介1的内容",
+                        verifyState: 1,
+                        time: '2018-04-22 23:00:58',
                     },
                     {
-                        requireid: "2",
-                        id: '1',
-                        prop_id: "1",
-                        keyword: "",
-                        prop_keyword: 'VR资讯',
-                        content: 'VR资源网产业新闻频道,为您带来最新的VR行业新闻、虚拟现实最新设备资讯、VR投资创业相关资讯。',
-                        changenote: "a"
+                        cId:'1',
+                        className: "简介",
+                        id: '2',
+                        termName: "简介2",
+                        termAbstract:"简介2的简介",
+                        termContent:"简介2的内容",
+                        verifyState: 0,
+                        time: '2018-04-22 23:01:36',
+                    },
+                ],
+                errorList:[
+                    {
+                        eId:'1',
+                        tId:'2',
+                        termName:'vr简介2',
+                        errorName:'错误描述',
+                        username:'abs',
+                        handleState:1
+                    },
+                    {
+                        eId:'2',
+                        tId:'1',
+                        termName:'vr简介1',
+                        errorName:'错误描述1',
+                        username:'abc',
+                        handleState:0
                     },
                 ]
             }
         },
 
         methods: {
-            handleRowHandle(row, event, column)
-            {
-                console.log(row.content);
-                this.message = row.content;
+            handleRowHandle(row, event, column) {
+                console.log(row.termAbstract);
+                this.termAbstract = row.termAbstract;
                 this.id = row.id;
-                this.prop_id = row.prop_id;
-                this.keyword = row.keyword;
-                this.prop_keyword = row.prop_keyword;
-                this.content = row.content;
-                this.changenote = row.changenote;
+                this.termContent = row.termContent;
                 this.content_show = true;
             },
-            handleCurrentChange(){
-                var self = this;
-                console.log("current-Page:");
-                console.log(self.pageNum);
-                self.getRequireList();
-                self.content_show = false;
-            },
-            open1()//通过按钮
 
-            {
+            handleErr(index, errorList) {
                 var self = this;
-                if (self.id == -1) {
-                    self.$message({
-                        type: 'info',
-                        message: '修改失败，请选择一项请求'
-                    });
-                    return;
-                }
-
-                var updatedata = {
-                    id: '1',
-                    prop_id: "0",
-                    prop_keyword: 'VR资讯',
-                    content: 'VR资源网产业新闻频道,为您带来最新的VR行业新闻、虚拟现实最新设备资讯、VR投资创业相关资讯。',
-                    changenote: "a"
+                var deleteData = {
+                    error_id: "",
                 };
-                updatedata.id = self.id;
-                updatedata.prop_id = self.prop_id;
-                updatedata.prop_keyword = self.prop_keyword;
-                updatedata.content = self.content;
-                updatedata.changenote = self.changenote;
-
+                deleteData.error_id = self.errorList[index].eId;
+                console.log(deleteData);
                 self.$axios({
-                    url: '/encyclopedia-propRequireOpen1',
+                    url: '/wikipedia/processPediaError',
                     method: 'post',
                     baseURL: self.hostURL,
-                    data: updatedata
-                }).then((response)=> {
+                    data: deleteData
+                }).then((response) => {
                     var state = response.data;
-                    if (state == 1) {
+                    if (state == 0) {
                         self.$message({
-                            type: 'info',
-                            message: '修改成功'
-                        });
-                        self.getRequireList();
-                        self.id = -1;
-                        self.prop_id = -1;
-                        self.message = '';
-                        self.content_show = false;
+                            type: 'error',
+                            message: '处理失败，请重试'
+                        })
                     }
                     else {
                         self.$message({
                             type: 'info',
-                            message: '修改失败'
+                            message: '处理成功'
                         });
+                        self.getLamaList();
                     }
-                }).catch((error)=> {
-                    console.log(error);
-                });
 
-
-            },
-            open2()//不通过按钮
-            {
-                var self = this;
-                if (self.id == -1) {
+                }).catch((error) => {
                     self.$message({
                         type: 'info',
-                        message: '删除失败，请选择一项请求'
+                        message: 'connect fail'
                     });
-                    return;
-                }
-                var updatedata = {
-                    id: '1',
-                    prop_id: "0",
-                    prop_keyword: 'VR资讯',
-                    content: 'VR资源网产业新闻频道,为您带来最新的VR行业新闻、虚拟现实最新设备资讯、VR投资创业相关资讯。',
-                    changenote: "a"
+                });
+            },
+
+            editLama(){},
+
+            deleteLama(index, lamaList) {
+                var self = this;
+                var deleteData = {
+                    l_id: "",
                 };
-                updatedata.id = self.id;
-                updatedata.prop_id = self.prop_id;
-                updatedata.prop_keyword = self.prop_keyword;
-                updatedata.content = self.content;
-                updatedata.changenote = self.changenote;
+                deleteData.l_id = self.lamaList[index].id;
+                console.log(deleteData);
                 self.$axios({
-                    url: '/encyclopedia-propRequireOpen2',
+                    url: '/wikipedia/deletePediaTerm',
                     method: 'post',
                     baseURL: self.hostURL,
-                    data: updatedata
-                }).then((response)=> {
+                    data: deleteData
+                }).then((response) => {
                     var state = response.data;
-                    if (state == 1) {
+                    if (state == 0) {
+                        self.$message({
+                            type: 'error',
+                            message: '删除失败，请重试'
+                        })
+                    }
+                    else {
                         self.$message({
                             type: 'info',
                             message: '删除成功'
                         });
-                        self.getRequireList();
-                        self.id = -1;
-                        self.prop_id = -1;
-                        self.message = '';
+                        self.getLamaList();
+                    }
+
+                }).catch((error) => {
+                    self.$message({
+                        type: 'info',
+                        message: 'connect fail'
+                    });
+                });
+            },
+
+            open1() {      //审核通过按钮
+                var self = this;
+                var updateData = {l_id: '1',};
+                updateData.l_id = self.id;
+                console.log(updateData);
+                self.$axios({
+                    url: '/wikipedia/verifyTermState',
+                    method: 'post',
+                    baseURL: self.hostURL,
+                    data: updateData
+                }).then((response) => {
+                    var state = response.data;
+                    if (state == 1) {
+                        self.$message({
+                            type: 'info',
+                            message: '审核通过'
+                        });
+                        self.getLamaList();
                         self.content_show = false;
                     }
                     else {
                         self.$message({
                             type: 'info',
-                            message: '删除失败'
+                            message: '审核不通过'
                         });
                     }
-                }).catch((error)=> {
+                }).catch((error) => {
                     console.log(error);
                 });
 
 
             },
-            /*
-             .then(() => {
-             this.$message({
-             type: 'success',
-             message: '删除成功!'
-             });
-             }).catch(() => {
-             this.$message({
-             type: 'info',
-             message: '已取消删除'
-             });
-             });
-             }
-
-             */
-            getRequireList(){
+            open2() {  //审核不通过按钮
                 var self = this;
-                var page = self.pageNum;
-                self.encyclopedia_propchangerequrire = [];
+                self.getLamaList();
+                self.content_show = false;
+            },
+
+            // getErrorList() {
+            //   var self = this;
+            //   self.$axios({
+            //     url: '/wikipedia/findPediaError',
+            //     method: 'get',
+            //     baseURL: self.hostURL,
+            //   }).then((response) => {
+            //     self.errorList = [];
+            //     self.errorList = response.data;
+            //   }).catch((error) => {
+            //     console.log(error);
+            //   });
+            // },
+
+            getLamaList() {
+                var self = this;
                 self.$axios({
-                    url: '/encyclopedia-propRequire/' + page,
+                    url: '/wikipedia/findAllTerms',
                     method: 'get',
                     baseURL: self.hostURL,
-                }).then((response)=> {
-                    if(response.data.length==0){
-                        if(self.pageNum!=1){
-                            self.pageNum=self.pageNum-1;
-                            self.$message({
-                                type:'info',
-                                message:'已经是最后一页了！'
-                            });
+                }).then((response) => {
+                    self.lamaList = [];
+                    for(var i=0;i<response.data.length;i++){
+                        if (response.data[i].verifyState === 1 ){
+                            self.lamaList.push({
+                                cId: response.data[i].cId,
+                                className: response.data[i].className,
+                                id: response.data[i].id,
+                                termName: response.data[i].termName,
+                                termAbstract: response.data[i].termAbstract,
+                                termContent: response.data[i].termContent,
+                                verifyState: '已通过',
+                                time: response.data[i].time,
+                            })
+                        } else {
+                            self.lamaList.push({
+                                cId: response.data[i].cId,
+                                className: response.data[i].className,
+                                id: response.data[i].id,
+                                termName: response.data[i].termName,
+                                termAbstract: response.data[i].termAbstract,
+                                termContent: response.data[i].termContent,
+                                verifyState: '未通过',
+                                time: response.data[i].time,
+                            })
                         }
-                    }else{
-                        self.encyclopedia_propchangerequrire = [];
-                        self.encyclopedia_propchangerequrire = response.data;
                     }
-                    
-                }).catch((error)=> {
+                }).catch((error) => {
                     console.log(error);
                 });
+                console.log(self.lamaList);
+                self.$axios({
+                    url: '/wikipedia/findPediaError',
+                    method: 'get',
+                    baseURL: self.hostURL,
+                }).then((response) => {
+                    self.errorList = [];
+                    self.errorList = response.data;
+                }).catch((error) => {
+                    console.log(error);
+                });
+            },
 
-
-            }
         },
+
         mounted(){
             var self = this;
-            self.getRequireList();
+            //self.getErrorList();
+            self.getLamaList();
         }
+
     }
 </script>
-
 
 <style>
     .content {

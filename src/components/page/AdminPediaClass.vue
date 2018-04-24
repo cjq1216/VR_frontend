@@ -25,11 +25,11 @@
             <h2>类别管理：</h2>
             <el-table :data="classList" border style="width: 100% " max-height="500">
 
-                <el-table-column prop="id" label="类别 id" width="120"></el-table-column>
+                <el-table-column prop="indexNum" label="类别 id" width="120"></el-table-column>
                 <el-table-column prop="className" label="类别名"></el-table-column>
                 <el-table-column
                         label="操作"
-                        width="150">
+                        width="120">
                     <template scope="scope">
                         <el-button type="danger" @click.native.prevent="deleteClass(scope.$index, classList)" size="small">删除</el-button>
                     </template>
@@ -55,10 +55,12 @@
                 classList: [
                     {
                         id: '1',
+                        indexNum:1,
                         className: "简介",
                     },
                     {
                         id: '2',
+                        indexNum:2,
                         className: "发展",
                     },
                 ]
@@ -148,7 +150,13 @@
                     baseURL: self.hostURL,
                 }).then((response)=> {
                     self.classList = [];
-                    self.classList = response.data;
+                    for(var i=0;i<response.data.length;i++){
+                        self.classList.push({
+                            id:response.data[i].id,
+                            indexNum:i+1,
+                            className:response.data[i].className,
+                        })
+                    };
                 }).catch((error)=> {
                     console.log(error);
                 });
@@ -163,7 +171,7 @@
     }
 </script>
 
-<style scoped>
+<style>
     .content {
         float: left;
         width: 70%;

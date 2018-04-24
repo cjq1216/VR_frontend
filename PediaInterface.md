@@ -86,7 +86,7 @@
 
     入参（）
     
-    出参（报错id:eId，词条id:tId，词条名:termName，报错内容:errorName，用户名，username,处理状态:handleState）
+    出参（报错id:eId，词条id:tId，词条名:termName，报错内容:errorName，用户名：username，处理状态:handleState）
     
 ### 完成报错处理
 /wikipedia/processPediaError
