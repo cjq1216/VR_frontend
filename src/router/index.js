@@ -208,12 +208,12 @@ export default new Router({
                     component: resolve => require(['../components/page/NewsRelease.vue'],resolve)
                 },
                 {
-                    path: '/admin/Encyclopedia',
-                    component: resolve => require(['../components/page/AdminstratorEncyclopedia.vue'],resolve)
+                    path: '/admin/pedialama',
+                    component: resolve => require(['../components/page/AdminPediaLama.vue'],resolve)
                 },
                 {
-                    path: '/admin/encyclopediaDelete',
-                    component: resolve => require(['../components/page/AdministratorEncyclopediaDelete.vue'], resolve)
+                    path: '/admin/pediaclass',
+                    component: resolve => require(['../components/page/AdminPediaClass.vue'], resolve)
                 },
                 {
                     path: '/admin/adminQuestionnairelist',

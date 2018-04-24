@@ -11,8 +11,11 @@
                 <div class="survey-wrapper clearfix">
                     <div class="survey-left pull-left">
                         <div id="search" class="search pull-left">
-                            <input name="txtName" type="text" id="txtName" class="searchbox" onfocus="if(value=='请输入问卷名进行搜索'){value='';}" onblur="if(value==''){value='请输入问卷名进行搜索’；}" value="请输入问卷名进行搜索" onkeypress="return searchQ(event);"/>
-                            <input type="submit" name="btnSub" id="btnSub" class="search-icon"/>
+                            <form @submit.prevent="searchQ()">
+                                <input v-model="search.value" type="text"/>
+                                <input type="submit" name="btnSub" id="btnSub" class="search-icon"/>
+                            </form>
+
                         </div>
                     </div>
                 </div>
@@ -79,6 +82,7 @@
                 //activeName2: 'first',
                 allowSubmit:true,
                 hostURL:"/VR",
+                search:{value:''},
                 //uid:"1",
                 //display_box:false,
                 questList:[
@@ -237,12 +241,34 @@
                     });
                 });
             },
+            searchQ(){
+                console.log(this.search.value);
+                var q_name_p = this.search.value;
+                var self = this;
+                self.$axios({
+                    url:'/question/getQuestionaire',
+                    method:'post',
+                    baseURL:self.hostURL,
+                    data:{
+                        q_name_part:q_name_p,
+                    }
+                }).then((response)=>{
+                    self.questList = [];
+                    self.questList= response.data;
+                    console.log(questList);
+                }).catch((error)=> {
+                    self.$message({
+                        type: 'info',
+                        message: 'connect fail'
+                    });
+                });
+            },
             questClick(quest){
                 var self=this;
                 console.log("go to QuestionnaierDetail!");
                 console.log(quest.id);
                 self.$router.push('/user/questionnairedetail?'+quest.id+'&'+quest.name);
-            }
+            },
             // getData(id){
             //     var self = this;
             //     self.ques_data.questions=[];

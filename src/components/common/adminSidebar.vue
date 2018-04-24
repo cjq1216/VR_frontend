@@ -65,13 +65,13 @@
                         title: '百科管理',
                         subs: [
                             {
-                                index: '/admin/Encyclopedia',
-                                title: '审核'
+                                index: '/admin/pediaclass',
+                                title: '类别管理'
                             },
 
                             {
-                                index: '/admin/encyclopediaDelete',
-                                title: '删除'
+                                index: '/admin/pedialama',
+                                title: '词条管理'
                             }
                         ]
                     },
