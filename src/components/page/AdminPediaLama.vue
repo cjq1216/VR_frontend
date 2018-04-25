@@ -2,12 +2,13 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-edit"></i> 百科管理</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-edit"></i> 词条管理</el-breadcrumb-item>
                 <el-breadcrumb-item>词条管理</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <el-row>
-            <el-button class="refresh-btn" type="success" @click="getLamaList()">刷新数据 </el-button>
+            <el-button class="refresh-btn" type="success" @click="getLamaList()">刷新数据</el-button>
+            <el-button class="refresh-btn" type="primary" @click="createLama()">创建词条</el-button>
         </el-row>
 
         <template>
@@ -27,7 +28,7 @@
         <br/>
         <template>
             <h2>词条管理：</h2>
-            <el-table :data="lamaList" border style="width: 100% " max-height="500" @row-click='handleRowHandle'>
+            <el-table :data="lamaList" border style="width: 100% " max-height="500">
                 <el-table-column prop="className" label="类别" width="120"></el-table-column>
                 <el-table-column prop="termName" label="词条名"></el-table-column>
                 <el-table-column prop="verifyState" label="审核状态" width="180"></el-table-column>
@@ -36,7 +37,7 @@
                         label="操作"
                         width="300">
                     <template scope="scope">
-                        <el-button @click="handleClick" size="small">查看</el-button>
+                        <el-button @click.native.prevent="handleRowHandle(scope.$index, lamaList)" size="small">查看</el-button>
                         <el-button type="primary" @click.native.prevent="editLama(scope.$index, lamaList)" size="small">编辑</el-button>
                         <el-button type="danger" @click.native.prevent="deleteLama(scope.$index, lamaList)" size="small">删除</el-button>
                     </template>
@@ -118,11 +119,12 @@
         },
 
         methods: {
-            handleRowHandle(row, event, column) {
-                console.log(row.termAbstract);
-                this.termAbstract = row.termAbstract;
-                this.id = row.id;
-                this.termContent = row.termContent;
+            handleRowHandle(index, lamaList) {
+                var self = this;
+                console.log(self.lamaList[index].termAbstract);
+                this.termAbstract = self.lamaList[index].termAbstract;
+                this.id = self.lamaList[index].id;
+                this.termContent = self.lamaList[index].termContent;
                 this.content_show = true;
             },
 
@@ -162,7 +164,17 @@
                 });
             },
 
-            editLama(){},
+            editLama(index, lamaList){
+                var self=this;
+                console.log("go to adminPediaLamaEditor!");
+                self.$router.push('/admin/pediaLamaCreater?'+self.lamaList[index].id);
+            },
+
+            createLama(){
+                var self=this;
+                console.log("go to adminPediaLamaCreater!");
+                self.$router.push('/admin/pediaLamaCreater');
+            },
 
             deleteLama(index, lamaList) {
                 var self = this;
@@ -191,7 +203,6 @@
                         });
                         self.getLamaList();
                     }
-
                 }).catch((error) => {
                     self.$message({
                         type: 'info',
@@ -229,8 +240,6 @@
                 }).catch((error) => {
                     console.log(error);
                 });
-
-
             },
             open2() {  //审核不通过按钮
                 var self = this;
@@ -340,7 +349,9 @@
 
     .refresh-btn{
         margin-top: -39px;
+        margin-right: 20px;
         float: right;
         margin-bottom: 10px;
     }
+
 </style>

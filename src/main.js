@@ -4,6 +4,7 @@ import router from './router';
 import axios from 'axios';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-default/index.css';    // 默认主题
+// import 'element-ui/lib/theme-chalk/index.css'
 //import '../static/css/theme-green/index.css';       // 浅绿色主题
 // import VueBlu from 'vue-blu';
 // import 'vue-blu/dist/css/vue-blu.min.css';
@@ -15,6 +16,9 @@ import VueQuillEditor from 'vue-quill-editor'
 // var d3 = require("d3");
 import VueImgInputer from 'vue-img-inputer'
 Vue.component('VueImgInputer', VueImgInputer)
+
+import VueWangeditor from 'vue-wangeditor-simple';
+Vue.use(VueWangeditor);
 
 Vue.use(ElementUI);
 Vue.use(VueQuillEditor);

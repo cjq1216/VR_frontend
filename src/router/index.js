@@ -216,6 +216,10 @@ export default new Router({
                     component: resolve => require(['../components/page/AdminPediaClass.vue'], resolve)
                 },
                 {
+                    path: '/admin/pediaLamaCreater',
+                    component: resolve => require(['../components/page/adminPediaLamaCreater.vue'], resolve)
+                },
+                {
                     path: '/admin/adminQuestionnairelist',
                     component: resolve => require(['../components/page/adminQuestionnaireList.vue'],resolve)
                 },
