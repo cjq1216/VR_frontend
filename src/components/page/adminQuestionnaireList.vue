@@ -13,23 +13,27 @@
             <div class="survey-folder"></div>
 
             <!--<p>问卷列表</p>-->
-            <el-row v-for="quest in questList">
-                <el-col :span="24" style="height: 50px">
-                    <div class="grid-content bg-purple-dark">
-                        <span class="quest-name">{{quest.name}}</span>
-                        <span class="quest-id">&nbsp;&nbsp;&nbsp;ID：{{quest.id}}</span>
-                        <span class="quest-num">答卷：{{quest.number}}</span>
-                    </div>
-                </el-col>
-                <el-col :span="24">
-                    <div class="grid-content bg-purple-light">
-                        <el-button class="mybtn" type="primary" icon="el-icon-edit" @click="goToEditor(quest)">编辑问卷</el-button>
-                        <el-button class="mybtn" type="primary" icon="el-icon-search" @click="goToAnalyze(quest)">数据分析</el-button>
-                        <el-button class="mybtn" type="danger" icon="el-icon-delete" @click="deleteQuest(quest)"></el-button>
-                        <el-switch v-model="quest.activated" active-color="#13ce66" inactive-color="#ff4949" active-text="开启" inactive-text="停止" active-value="1" inactive-value="0" @change="questSwitch(quest,$event)" style="float: right;margin-top: 18px;"></el-switch>
-                    </div>
-                </el-col>
-            </el-row>
+            <div v-for="quest in questList">
+                <el-row>
+                    <el-col :span="24" style="height: 50px">
+                        <div class="grid-content bg-purple-dark">
+                            <span class="quest-name">{{quest.name}}</span>
+                            <span class="quest-id">&nbsp;&nbsp;&nbsp;ID：{{quest.id}}</span>
+                            <span class="quest-num">答卷：{{quest.number}}</span>
+                        </div>
+                    </el-col>
+                    <el-col :span="24">
+                        <div class="grid-content bg-purple-light">
+                            <el-button class="mybtn" type="primary" icon="el-icon-edit" @click="goToEditor(quest)">编辑问卷</el-button>
+                            <el-button class="mybtn" type="primary" icon="el-icon-search" @click="goToAnalyze(quest)">数据分析</el-button>
+                            <el-button class="mybtn" type="danger" icon="el-icon-delete" @click="deleteQuest(quest)"></el-button>
+                            <el-switch v-model="quest.activated" active-color="#13ce66" inactive-color="#ff4949" active-text="开启" inactive-text="停止" active-value="1" inactive-value="0" @change="questSwitch(quest,$event)" style="float: right;margin-top: 18px;"></el-switch>
+                        </div>
+                    </el-col>
+
+                </el-row>
+                <br/>
+            </div>
             <br />
 
         </div>

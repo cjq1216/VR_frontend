@@ -26,6 +26,7 @@
             </el-form-item>
             <el-form-item label="词条内容：">
                 <br/>
+                <br/>
                 <!--<el-input type="textarea" v-model="form.lama.termContent"></el-input>-->
                 <div>
                     <vue-wangeditor id="editor1" v-model="form.lama.termContent"></vue-wangeditor>
@@ -189,7 +190,7 @@
 
             getLama(id){
                 var self = this;
-                console.log(id);
+                //console.log(id);
                 self.$axios({
                     url: '/wikipedia/findTermById',
                     method: 'post',
@@ -198,13 +199,9 @@
                         l_id: id,
                     },
                 }).then((response)=>{
+                    //console.log(response.data);
                     self.form.lama = [];
-                    self.form.lama.push({
-                        id:response.data.id,
-                        termName:response.data.termName,
-                        termAbstract:response.data.termAbstract,
-                        termContent:response.data.termContent,
-                    });
+                    self.form.lama = response.data;
                     self.isCreate = false;
                 }).catch((error)=>{
                     self.$message({

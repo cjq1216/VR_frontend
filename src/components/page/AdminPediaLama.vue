@@ -15,8 +15,8 @@
             <h2>用户报错：</h2>
             <el-table :data="errorList" border style="width: 100% " max-height="300">
                 <el-table-column prop="termName" label="词条名"></el-table-column>
-                <el-table-column prop="errorName" label="报错内容"></el-table-column>
-                <el-table-column prop="username" label="用户名" width="180"></el-table-column>
+                <el-table-column prop="errorContent" label="报错内容"></el-table-column>
+                <el-table-column prop="userName" label="用户名" width="180"></el-table-column>
                 <el-table-column label="操作" width="180">
                     <template scope="scope">
                         <el-button v-if="errorList[scope.$index].handleState===0" type="primary" @click.native.prevent="handleErr(scope.$index, errorList)" size="small">未读</el-button>
@@ -48,8 +48,10 @@
                 <br/>
                 <h2 class="content_title"> 词条内容 </h2>
                 <div style="margin-top:10px;border: 1px solid #A7C942;">
+                    <h2 class="content_subtitle">词条简述</h2>
                     <p class="content_p" style="margin:10px;">{{ termAbstract }}</p>
-                    <p class="content_p" style="margin:10px;">{{ termContent }}</p>
+                    <h2 class="content_subtitle">词条正文</h2>
+                    <p id="content" class="content_p" style="margin:10px;"></p>
                 </div>
 
                 <br/>
@@ -102,16 +104,16 @@
                         eId:'1',
                         tId:'2',
                         termName:'vr简介2',
-                        errorName:'错误描述',
-                        username:'abs',
+                        errorContent:'错误描述',
+                        userName:'abs',
                         handleState:1
                     },
                     {
                         eId:'2',
                         tId:'1',
                         termName:'vr简介1',
-                        errorName:'错误描述1',
-                        username:'abc',
+                        errorContent:'错误描述1',
+                        userName:'abc',
                         handleState:0
                     },
                 ]
@@ -121,10 +123,12 @@
         methods: {
             handleRowHandle(index, lamaList) {
                 var self = this;
-                console.log(self.lamaList[index].termAbstract);
+                //console.log(self.lamaList[index].termAbstract);
                 this.termAbstract = self.lamaList[index].termAbstract;
                 this.id = self.lamaList[index].id;
                 this.termContent = self.lamaList[index].termContent;
+                var insertText = this.termContent;
+                document.getElementById("content").innerHTML = insertText;
                 this.content_show = true;
             },
 
@@ -134,7 +138,7 @@
                     error_id: "",
                 };
                 deleteData.error_id = self.errorList[index].eId;
-                console.log(deleteData);
+                //console.log(deleteData);
                 self.$axios({
                     url: '/wikipedia/processPediaError',
                     method: 'post',
@@ -182,7 +186,7 @@
                     l_id: "",
                 };
                 deleteData.l_id = self.lamaList[index].id;
-                console.log(deleteData);
+                //console.log(deleteData);
                 self.$axios({
                     url: '/wikipedia/deletePediaTerm',
                     method: 'post',
@@ -215,7 +219,7 @@
                 var self = this;
                 var updateData = {l_id: '1',};
                 updateData.l_id = self.id;
-                console.log(updateData);
+                //console.log(updateData);
                 self.$axios({
                     url: '/wikipedia/verifyTermState',
                     method: 'post',
@@ -297,7 +301,7 @@
                 }).catch((error) => {
                     console.log(error);
                 });
-                console.log(self.lamaList);
+                //console.log(self.lamaList);
                 self.$axios({
                     url: '/wikipedia/findPediaError',
                     method: 'get',
@@ -305,6 +309,7 @@
                 }).then((response) => {
                     self.errorList = [];
                     self.errorList = response.data;
+                    //console.log(self.errorList);
                 }).catch((error) => {
                     console.log(error);
                 });
@@ -331,6 +336,11 @@
         text-align: center;
         text-transform: uppercase;
         color: #A7C942;
+    }
+
+    .content_subtitle {
+        text-align: center;
+        text-transform: uppercase;
     }
 
     .content_p {

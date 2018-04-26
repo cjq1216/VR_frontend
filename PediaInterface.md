@@ -77,7 +77,7 @@
 
 将处理状态设为0
 
-    入参（词条id l_id:int，报错内容:string，用户名:string）
+    入参（词条id l_id:int，报错内容e_con:string，用户名user_name:string）
     
     出参（成功1/失败0）
     
@@ -86,7 +86,7 @@
 
     入参（）
     
-    出参（报错id:eId，词条id:tId，词条名:termName，报错内容:errorName，用户名：username，处理状态:handleState）
+    出参（报错id:eId，词条id:tId，词条名:termName，报错内容:errorContent，用户名：userName，处理状态:handleState）
     
 ### 完成报错处理
 /wikipedia/processPediaError
