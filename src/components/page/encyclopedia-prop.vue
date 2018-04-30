@@ -436,7 +436,6 @@
     width:100%;
 }
 
-/*=======================================*/
 ul {
     list-style: none;
     display: block;

@@ -157,11 +157,11 @@ export default new Router({
                 },
                 {
                     path: '/user/pedia',
-                    component: resolve => require(['../components/page/pedia.vue'],resolve)
+                    component: resolve => require(['../components/page/pediaHome.vue'],resolve)
                 },
                 {
                     path: '/user/pedia2',
-                    component: resolve => require(['../components/page/pedia2.vue'],resolve)
+                    component: resolve => require(['../components/page/pediaResult.vue'],resolve)
                 },
                 {
                     path: '/user/encyclopedia-prop',

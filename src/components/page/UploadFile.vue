@@ -154,7 +154,7 @@
                                     <el-table-column
                                         fixed="right"
                                         label="操作"
-                                        width="180">
+                                        width="210">
                                     <template scope="scope">
                                         <el-button @click="handleToOffsale1(scope.$index)" size="small">下架</el-button>
                                         <el-button @click="handleDelete1(scope.$index)" size="small" type="danger">删除</el-button>
@@ -308,7 +308,7 @@
                                     <el-table-column
                                         fixed="right"
                                         label="操作"
-                                        width="180">
+                                        width="210">
                                     <template scope="scope">
                                         <el-button @click="handleToOffsale2(scope.$index)" size="small">下架</el-button>
                                         <el-button @click="handleDelete2(scope.$index)" type="danger" size="small">删除</el-button>
@@ -437,7 +437,7 @@
                                     <el-table-column
                                         fixed="right"
                                         label="操作"
-                                        width="180">
+                                        width="210">
                                     <template scope="scope">
                                         <el-button @click="handleToOffsale3(scope.$index)" size="small">下架</el-button>
                                         <el-button @click="handleDelete3(scope.$index)" type="danger" size="small">删除</el-button>
@@ -609,7 +609,7 @@
                                     <el-table-column
                                         fixed="right"
                                         label="操作"
-                                        width="180">
+                                        width="210">
                                     <template scope="scope">
                                         <el-button @click="handleToUpsale1(scope.$index)" size="small">上架</el-button>
                                         <el-button @click="handleDelete4(scope.$index)" type="danger" size="small">删除</el-button>
@@ -763,7 +763,7 @@
                                     <el-table-column
                                         fixed="right"
                                         label="操作"
-                                        width="180">
+                                        width="210">
                                     <template scope="scope">
                                         <el-button @click="handleToUpsale2(scope.$index)" size="small">上架</el-button>
                                         <el-button @click="handleDelete5(scope.$index)" type="danger" size="small" >删除</el-button>
@@ -892,7 +892,7 @@
                                     <el-table-column
                                         fixed="right"
                                         label="操作"
-                                        width="180">
+                                        width="210">
                                     <template scope="scope">
                                         <el-button @click="handleToUpsale3(scope.$index)" size="small">上架</el-button>
                                         <el-button @click="handleDelete6(scope.$index)" type="danger" size="small">删除</el-button>

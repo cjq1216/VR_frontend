@@ -17,9 +17,6 @@ import VueQuillEditor from 'vue-quill-editor'
 import VueImgInputer from 'vue-img-inputer'
 Vue.component('VueImgInputer', VueImgInputer)
 
-import VueWangeditor from 'vue-wangeditor-simple';
-Vue.use(VueWangeditor);
-
 Vue.use(ElementUI);
 Vue.use(VueQuillEditor);
 // Vue.use(VueBlu);

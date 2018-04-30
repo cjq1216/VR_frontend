@@ -15,7 +15,7 @@
 
             <el-form-item label="词条类别：" required>
                 <el-radio-group v-model="form.classform.id">
-                    <el-radio v-for="cla in form.classform" :label="cla.id">{{cla.className}}</el-radio>
+                    <el-radio border v-for="cla in form.classform" :label="cla.id">{{cla.className}}</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="词条名：" required>
@@ -28,13 +28,13 @@
                 <br/>
                 <br/>
                 <!--<el-input type="textarea" v-model="form.lama.termContent"></el-input>-->
-                <div>
-                    <vue-wangeditor id="editor1" v-model="form.lama.termContent"></vue-wangeditor>
-                </div>
-
-                <!--<div id="editor">-->
-                <!--<p v-model="form.lama.termContent">{{form.lama.termContent}}</p>-->
+                <!--<div>-->
+                <!--<vue-wangeditor id="editor1" v-model="form.lama.termContent"></vue-wangeditor>-->
                 <!--</div>-->
+
+                <div id="editor">
+                    <p v-model="form.lama.termContent" id="Content"></p>
+                </div>
 
             </el-form-item>
 
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+    import E from 'wangeditor';
     export default {
         name: "lamaCreate",
 
@@ -203,6 +204,9 @@
                     self.form.lama = [];
                     self.form.lama = response.data;
                     self.isCreate = false;
+                    var insText = self.form.lama.termContent;
+                    console.log(insText);
+                    document.getElementById("Content").innerHTML = insText;
                 }).catch((error)=>{
                     self.$message({
                         type:'info',
@@ -227,39 +231,38 @@
             if (tmp1[1]){
                 self.getLama(tmp1[1]);
             };
-            // var E = window.wangEditor;
-            // var editor = new E(document.getElementById('editor'));
-            // editor.onchange = function () {
-            //   // onchange 事件中更新数据
-            //   self.form.lama.termContent = editor.txt.html();
-            // };
-            // editor.create();
+            var editor = new E(document.getElementById('editor'));
+            editor.customConfig.menus = [
+                'head',  // 标题
+                'bold',  // 粗体
+                'fontSize',  // 字号
+                'fontName',  // 字体
+                'italic',  // 斜体
+                'underline',  // 下划线
+                'strikeThrough',  // 删除线
+                'foreColor',  // 文字颜色
+                'link',  // 插入链接
+                'list',  // 列表
+                'justify',  // 对齐方式
+                'quote',  // 引用
+                'image',  // 插入图片
+                'table',  // 表格
+                'video',  // 插入视频
+                'code',  // 插入代码
+                'undo',  // 撤销
+                'redo'  // 重复
+            ];
+            editor.customConfig.onchange = (html) => {
+                self.form.lama.termContent = html
+            };
+            editor.customConfig.pasteIgnoreImg = true;
+            editor.create();
         },
 
     }
 </script>
 
 <style scoped>
-    .content {
-        float: left;
-        width: 70%;
-    }
-
-    .content_title {
-        text-align: center;
-        text-transform: uppercase;
-        color: #A7C942;
-    }
-
-    .content_p {
-        text-indent: 50px;
-        text-align: justify;
-        letter-spacing: 3px;
-    }
-
-    .pagination {
-        margin-left: 50px;
-    }
 
     .crumbs {
         text-decoration: none;

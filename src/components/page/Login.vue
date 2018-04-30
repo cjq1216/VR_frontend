@@ -2,10 +2,10 @@
     <div class="login-wrap">
         <div class="background">
             <div class="background-img">
-             <!--<img src="../assets/LoginWallpaper.jpg">-->
-             <img :src="pic_location" style="width:100%">
-            </div>        
-            <div class="title-wrap">    
+                <!--<img src="../assets/LoginWallpaper.jpg">-->
+                <img :src="pic_location" style="width:100%">
+            </div>
+            <div class="title-wrap">
                 <div class="ms-title">虚拟现实产品质量评估平台</div>
                 <span class="ms-intro">带你全方位了解VR世界</span>
             </div>
@@ -22,16 +22,16 @@
                             <el-form :model="login" :rules="loginRules" ref="login" label-width="0px">
                                 <el-form-item prop="verCode">
                                     <el-popover
-                                        ref="a"
-                                        placement="right-end"
-                                        trigger="hover">
-                                            <img :src="imgUrl" alt="验证码图片" width="200px" @click="getVerCode">
+                                            ref="a"
+                                            placement="right-end"
+                                            trigger="hover">
+                                        <img :src="imgUrl" alt="验证码图片" width="200px" @click="getVerCode">
                                     </el-popover>
-                                    <el-input 
-                                        v-popover:a
-                                        placeholder="验证码" 
-                                        v-model="login.verCode" 
-                                        @keyup.enter.native="loginForm('login')">
+                                    <el-input
+                                            v-popover:a
+                                            placeholder="验证码"
+                                            v-model="login.verCode"
+                                            @keyup.enter.native="loginForm('login')">
                                     </el-input>
                                 </el-form-item>
                             </el-form>
@@ -62,16 +62,16 @@
                             <el-form :model="register" :rules="registerRules" ref="register" label-width="0px">
                                 <el-form-item prop="verCode">
                                     <el-popover
-                                        ref="b"
-                                        placement="right-end"
-                                        trigger="hover">
-                                            <img :src="imgUrl" alt="验证码图片" width="200px" @click="getVerCode">
+                                            ref="b"
+                                            placement="right-end"
+                                            trigger="hover">
+                                        <img :src="imgUrl" alt="验证码图片" width="200px" @click="getVerCode">
                                     </el-popover>
-                                    <el-input 
-                                        v-popover:b
-                                        placeholder="验证码" 
-                                        v-model="register.verCode" 
-                                        @keyup.enter.native="registerForm('register')">
+                                    <el-input
+                                            v-popover:b
+                                            placeholder="验证码"
+                                            v-model="register.verCode"
+                                            @keyup.enter.native="registerForm('register')">
                                     </el-input>
                                 </el-form-item>
                             </el-form>
@@ -84,7 +84,7 @@
                             </div>
                         </el-form>
                     </el-tab-pane>
-                </el-tabs>    
+                </el-tabs>
             </div>
         </div>
         <h1 class="model-header" >功能介绍</h1>
@@ -151,18 +151,18 @@
             </div>
         </div>
         <div class="footer">
-            <p style="margin-top:10px;">&copy 2018 虚拟现实产品质量评估平台 &nbsp &nbsp &nbsp 如有问题，请联系管理员<span id="help">10086@qq.com</span></p>
+            <p style="margin-top:10px;">&copy 2017 虚拟现实产品质量评估平台 &nbsp &nbsp &nbsp 如有问题，请联系管理员<span id="help">10086@qq.com</span></p>
         </div>
     </div>
 </template>
 
 <script>
-import loginImg from '../../assets/LoginWallpaper.jpg';
-import news from '../../assets/news.png';
-import product from '../../assets/product.png';
-import chat from '../../assets/chat.png';
-import wiki from '../../assets/wiki.png';
-import comment from '../../assets/comment.png';
+    import loginImg from '../../assets/LoginWallpaper.jpg';
+    import news from '../../assets/news.png';
+    import product from '../../assets/product.png';
+    import chat from '../../assets/chat.png';
+    import wiki from '../../assets/wiki.png';
+    import comment from '../../assets/comment.png';
 
     export default {
         data: function(){
@@ -372,7 +372,7 @@ import comment from '../../assets/comment.png';
                 // sessionStorage.setItem('ms_type',2);
                 self.$refs[formName].validate((valid) => {
                     if (valid) {
-                       this.$axios({
+                        this.$axios({
                             url: '/user/login',
                             method: 'post',
                             baseURL: this.hostUrl,
@@ -383,37 +383,37 @@ import comment from '../../assets/comment.png';
                                 checkcode: this.login.verCode
                             }
                         })
-                        .then((response) => {
-                            if (response.data.code === 200) {
-                                //user == 0 
-                                if (response.data.type === 0) {
-                                    localStorage.setItem('ms_userid',response.data.userid);
-                                    localStorage.setItem('ms_username', response.data.nickname);
-                                    sessionStorage.setItem('ms_type', response.data.type);
-                                    var compare={data:[]};
-                                    localStorage.setItem('compare_data',JSON.stringify(compare));
-                                    localStorage.setItem('kind','none');
-                                    self.$router.push('/user/news-list');
+                            .then((response) => {
+                                if (response.data.code === 200) {
+                                    //user == 0
+                                    if (response.data.type === 0) {
+                                        localStorage.setItem('ms_userid',response.data.userid);
+                                        localStorage.setItem('ms_username', response.data.nickname);
+                                        sessionStorage.setItem('ms_type', response.data.type);
+                                        var compare={data:[]};
+                                        localStorage.setItem('compare_data',JSON.stringify(compare));
+                                        localStorage.setItem('kind','none');
+                                        self.$router.push('/user/news-list');
+                                    } else {
+                                        //admin ==1
+                                        localStorage.setItem('ms_username', response.data.nickname);
+                                        sessionStorage.setItem('ms_type', response.data.type);
+                                        self.$router.push('/admin/administrator');
+                                    }
                                 } else {
-                                //admin ==1
-                                    localStorage.setItem('ms_username', response.data.nickname);
-                                    sessionStorage.setItem('ms_type', response.data.type);
-                                    self.$router.push('/admin/administrator');
+                                    // console.log(response);
+                                    console.log('code', response.data.code);
+                                    self.codeParsing(response.data.code);
                                 }
-                            } else {
-                                // console.log(response);
-                                console.log('code', response.data.code);
-                                self.codeParsing(response.data.code);
-                            }
-                        })
-                        .catch((error) => {
-                            console.log("【Error】:", error);
-                            this.$message({
-                                title: '网络请求错误',
-                                message: '请检查网络并重试',
-                                type: 'error'
+                            })
+                            .catch((error) => {
+                                console.log("【Error】:", error);
+                                this.$message({
+                                    title: '网络请求错误',
+                                    message: '请检查网络并重试',
+                                    type: 'error'
+                                });
                             });
-                        });
                     } else {
                         console.log('error login!!');
                         this.$message({
@@ -426,7 +426,7 @@ import comment from '../../assets/comment.png';
                 });
             },
 
-            registerForm(formName) {   
+            registerForm(formName) {
                 const self = this;
 
                 self.$refs[formName].validate((valid) => {
@@ -437,12 +437,12 @@ import comment from '../../assets/comment.png';
                         this.$notify({
                             title: '注册信息',
                             message: h
-                                ('pre',
+                            ('pre',
                                 { style: 'color: teal' },
                                 '\n邮箱: ' + this.register.username +
                                 '\n昵称: ' + this.register.nickname +
                                 '\n密码: ' + this.register.repassword
-                                )
+                            )
                         });
 
                         // 网络请求
@@ -458,30 +458,30 @@ import comment from '../../assets/comment.png';
                                 nickname: this.register.nickname
                             }
                         })
-                        .then((response) => {
-                            if (response.data.code === 200) {
+                            .then((response) => {
+                                if (response.data.code === 200) {
+                                    this.$notify({
+                                        title: '成功',
+                                        message: '注册成功！请检查邮箱，若未收到激活邮件，请确认是否被归为垃圾邮件。',
+                                        type: 'success'
+                                    });
+                                    self.goToLogin();
+                                    self.login.username = self.register.username;
+                                    self.login.password = self.register.password;
+                                    self.getVerCode(); // 手动更一次验证码
+                                } else {
+                                    console.log(response.data.code);
+                                    self.codeParsing(response.data.code);
+                                }
+                            })
+                            .catch((error) => {
                                 this.$notify({
-                                    title: '成功',
-                                    message: '注册成功！请检查邮箱，若未收到激活邮件，请确认是否被归为垃圾邮件。',
-                                    type: 'success'
+                                    title: '失败',
+                                    message: '注册失败: ' + '请重试!',
+                                    type: 'error'
                                 });
-                                self.goToLogin();
-                                self.login.username = self.register.username;
-                                self.login.password = self.register.password;
-                                self.getVerCode(); // 手动更一次验证码
-                            } else {
-                                console.log(response.data.code);
-                                self.codeParsing(response.data.code);
-                            }
-                        })
-                        .catch((error) => {
-                            this.$notify({
-                                title: '失败',
-                                message: '注册失败: ' + '请重试!',
-                                type: 'error'
+                                console.log("【Error】:", error);
                             });
-                            console.log("【Error】:", error);
-                        });
                     } else {
                         console.log('error register!!');
                         this.$message({
@@ -491,7 +491,7 @@ import comment from '../../assets/comment.png';
                         });
                         return false;
                     }
-                });          
+                });
             },
 
             goToRegister() {
@@ -533,7 +533,7 @@ import comment from '../../assets/comment.png';
         cursor: pointer;
         font-size:12px;
         line-height:30px;
-        color:#999;        
+        color:#999;
     }
     #register {
         color: #fff;
@@ -545,7 +545,7 @@ import comment from '../../assets/comment.png';
         color: #fff;
         font-weight: bold;
         cursor: help;
-        text-decoration: underline;        
+        text-decoration: underline;
     }
     #help {
         text-decoration: underline;
@@ -635,7 +635,7 @@ import comment from '../../assets/comment.png';
         /*margin: 0 0 0 -190px;*/
         text-align: center;
         font-size:10px;
-        color: rgb(153, 153, 153);     
+        color: rgb(153, 153, 153);
     }
     .login-btn{
         text-align: center;

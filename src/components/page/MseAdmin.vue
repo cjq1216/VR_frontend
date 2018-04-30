@@ -15,18 +15,17 @@
                         style="width: 100%">
                     <el-table-column
                             prop="evaluationTitle"
-                            label="文章标题"
-                            width="340">
+                            label="文章标题">
                     </el-table-column>
                     <el-table-column
                             prop="authorName"
                             label="作者"
-                            width="200">
+                            width="160">
                     </el-table-column>
                     <el-table-column
                             prop="updateTime"
                             label="发表时间"
-                            width="200">
+                            width="180">
                         <template scope="scope">
                             <span style="">{{ timeFomat(scope.row.updateTime) }}</span>
                         </template>
@@ -34,7 +33,7 @@
                     <el-table-column
                             prop="ups"
                             label="点赞数"
-                            width="120">
+                            width="130">
                     </el-table-column>
                     <el-table-column
                             prop="downs"
@@ -44,11 +43,11 @@
                     <el-table-column
                             prop="comments"
                             label="评论数"
-                            width="120">
+                            width="130">
                     </el-table-column>
                     <el-table-column
                             label="操作"
-                            width="240">
+                            width="300">
                         <template scope="scope">
                             <el-button @click="handleView(scope.row)" type="primary" size="small">查看</el-button>
                             <el-button @click="handleEdit(scope.row)" type="" size="small">编辑</el-button>
