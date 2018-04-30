@@ -2,79 +2,104 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item to="/user/pedia"><i class="el-icon-date"></i>VR百科 </el-breadcrumb-item>
-                <el-breadcrumb-item>目录浏览</el-breadcrumb-item>
+                <el-breadcrumb-item to="/user/pedia"><i class="el-icon-date"></i> <span class="bread">VR百科</span></el-breadcrumb-item>
+                <el-breadcrumb-item><span class="bread">百科知识</span></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class="about-w3-agile" id="about">
-            <!--<div class="container">-->
-                <el-row >
-                    <el-col :span="6">
-                    <div id="navigation">
-                        <div class="collection">
-                            <ul>
-                            <a href="#/user/pedia2" class="collection-item"
-                            v-for="onetype in typeList"
-                            @click="selected(onetype)"
-                            :class="{active: type == onetype}"><li>{{onetype}}</li></a>
-                            </ul>
-                        </div>
-                    </div>
-                    </el-col>
-                    <el-col :span="18">
-                    <div id="show-items">
-                        <div v-for="item in items" class="sing-item" @click="encyclopediaClick(item)">
-                            <a href="javascript:void(0);" class="link-tit" title=""></a>
-                            <h2>{{item.keyword}}</h2>
-                            <article>{{item.prop_keyword}}</article>
-                        </div>
-                    </div>
-                    </el-col>
-                </el-row>
-          <!--</div>-->
-    </div>
 
-
-         <div class="pagination">
-            <el-pagination
-                @current-change="handleCurrentChange"
-                :current-page.sync="pageNum"
-                layout="prev, next">
-            </el-pagination>
+        <div class="sidebar" v-if="seen">
+            <div class="container">
+                <h3 class="wthree_head">
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                    <span>编辑</span>
+                </h3>
+                <el-input placeholder="词条名" id="keySpace" v-model="keyword"></el-input>
+                <el-input placeholder="词条属性" id="pkSpace" v-model="prop_keyword"></el-input>
+                <textarea placeholder="内容" id="conSpace" v-model="content"></textarea>
+                <el-button class="or-btn" style="margin-left:30%;margin-top:10px" type="primary" @click="submit()">提交</el-button>
+                <el-button class="or-btn" style="margin-top:10px" type="primary" @click="close()">关闭</el-button>
+            </div>
         </div>
 
+        <div class="events">
+            <div class="container">
+                <div class="news-box">
+                    <h2 class="title">{{keyword}}</h2>
+                    <div class="borderline clearfix">
+                        <p class="artinfo"><span class="author"></span> </p>
+                    </div>
+                    <div class="article">
+                        <ul class="news-list">
+                            <li class="news-item" v-for="encyclopedia_prop in encyclopedia_propData">
+                                <a href="javascript:void(0);" class="link-tit" title="">
+                                    <span class="news-title">{{encyclopedia_prop.prop_keyword}}</span>
+                                    <span class="news-desc">{{encyclopedia_prop.content}}</span>
+                                </a>
+                                <el-button style="float:right" type="warning" @click="edit(encyclopedia_prop)">编辑</el-button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="news-comment">
+                        <el-button-group>
+                            <el-button type="primary" icon="circle-check" @click="up()">赞{{upvote}}</el-button>
+                            <el-button type="primary" @click="down()">踩{{downvote}}<i class="el-icon-circle-cross el-icon--right"></i></el-button>
+                        </el-button-group>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
-
 <script>
-
     export default {
         data: function(){
             return {
-                pageNum:1,
-                pageTotal:20,
-                pageSize:1,
-                hostURL:'/VR',
-                
-                items:[
-                  {
-                        id:1,
-                        keyword:'fuuuuuuu',
-                        type:"",
-                        changenote:'11111111111111111111111111111111111111',
-                        prop_keyword:'2222222222222222',
+                seen:false,
+                activeName2: 'first',
+                allowSubmit:true,
+                hostURL:"/VR",
+                id:"1",
+                prop_id:"1",
+                keyword:"",
+                prop_keyword:"",
+                content:"",
+                upvote:1,
+                downvote:1,
+                changenote:"a1",
+                encyclopedia_propData:[
+                    {
+                        id:"1",
+                        prop_id:"1",
+                        keyword:"",
+                        prop_keyword:"",
+                        content:"a",
+                        changenote:"a1",
+
                     },
                     {
-                        id:2,
-                        keyword:'ffffffff',
-                        type:"",
-                        changenote:'1111111111111111111111111111111111',
-                        prop_keyword:'222222222222',
+                        id:"2",
+                        prop_id:"2",
+                        keyword:"",
+                        prop_keyword:"",
+                        content:"b",
+                        changenote:"b1",
+
                     }
                 ],
-                type:'VR简介',
-                typeList: ['VR简介', 'VR应用', 'VR历史']
+                lama:[
+                    {
+                        cId:'1',
+                        className: "简介",
+                        id: '1',
+                        termName: "简介1",
+                        termAbstract:"简介1的简介",
+                        termContent:"简介1的内容",
+                        verifyState: 1,
+                        time: '2018-04-22 23:00:58',
+                    }
+                ]
             }
         },
         methods:{
@@ -143,95 +168,442 @@
                         break;
                 }
             },
-            getTypes(){
-              var self=this;
-              self.typeList=[];
-              self.$axios({
-                    url:'/encyclopediaDir',
-                    method:'post',
-                    baseURL:self.hostURL,
-                    data:"notype"
+            getEncyclopedia_propData(id){
+                var self = this;
+                self.encyclopedia_propData = [];
+                self.$axios({
+                    url:'/encyclopedia-prop/'+id,
+                    method:'get',
+                    baseURL: self.hostURL
                 }).then((response)=>{
-                    self.typeList = response.data;
+                    self.encyclopedia_propData = response.data;
+
+                    console.log(encyclopedia_propData);
                 }).catch((error)=>{
-                    self.$message({
-                        type:'info',
-                        message:'connect fail'
-                    });
+                    console.log(error);
+                });
+            },
+            getEncyclopediaData(id){
+                var self=this;
+                var encydata={
+                    id:1,
+                    keyword:'',
+                    type:'',
+                    changenote:'',
+                    upvote:1,
+                    downvote:1
+                };
+                self.$axios({
+                    url:'/encyclopedia-votedata/'+id,
+                    method:'get',
+                    baseURL: self.hostURL
+                }).then((response)=>{
+                    encydata = response.data;
+                    self.id=encydata.id;
+                    self.keyword=encydata.keyword;
+                    self.upvote=encydata.upvote;
+                    self.downvote=encydata.downvote;
+                }).catch((error)=>{
+                    console.log(error);
                 });
 
             },
-            search(onetype,pageNum){
-              var self=this;
-              //self.items=[];
-              var dirtype={
-                type:"",
-                pageNum:1
-              };
-              dirtype.type=onetype;
-              dirtype.pageNum=pageNum;
-              self.$axios({
-                    url:'/encyclopediaTypeDir',
+            edit(encyclopedia_prop){
+                var self=this;
+                self.seen=true;
+                self.id=encyclopedia_prop.id;
+                self.keyword=encyclopedia_prop.keyword;
+                self.prop_id=encyclopedia_prop.prop_id;
+                self.prop_keyword=encyclopedia_prop.prop_keyword;
+                self.content=encyclopedia_prop.content;
+                self.changenote=self.changenote;
+
+
+
+            },
+            close(){
+                var self=this;
+                self.seen=false;
+            },
+            submit(){
+                var self=this;
+                var submitdata={
+                    id:"1",
+                    prop_id:"1",
+                    keyword:"",
+                    prop_keyword:"",
+                    content:"a",
+                    changenote:"a1",
+                };
+                submitdata.id=self.id;
+                submitdata.prop_id=self.prop_id;
+                submitdata.keyword=self.keyword;
+                submitdata.prop_keyword=self.prop_keyword;
+                submitdata.content=self.content;
+                submitdata.changenote=localStorage.getItem('ms_username');
+                self.$axios({
+                    url:'/encyclopedia-propChange',
                     method:'post',
-                    baseURL:self.hostURL,
-                    data:dirtype
+                    baseURL: self.hostURL,
+                    data:submitdata
                 }).then((response)=>{
-                    console.log("len="+response.data.length);
-                    if(response.data.length==0){
-                        if(self.pageNum!=1){
-                            self.pageNum=self.pageNum-1;
-                            self.$message({
-                                type:'info',
-                                message:'已经是最后一页了！'
-                            });
-                        }
-                    }else{
-                        self.items=[];
-                        self.items = response.data;
+                    var state=response.data;
+                    if(state==1){
+                        self.$message({
+                            type:'info',
+                            message:'提交成功'
+                        });
+                        self.close();
                     }
                 }).catch((error)=>{
                     console.log(error);
+                });
+
+            },
+            up()
+            {
+                var self=this;
+                var sid=self.id;
+                var username=localStorage.getItem('ms_username');
+                var votenote='encyclopedia-vote'+sid;
+                var flag=localStorage.getItem(votenote);
+                if(username==flag)
+                {
+                    self.$message({
+                        type:'info',
+                        message:'您已经对该条百科做出评价'
+                    });
+                    return ;
+                }
+                self.$axios({
+                    url:'/encyclopedia-up/'+sid,
+                    method:'get',
+                    baseURL: self.hostURL
+                }).then((response)=>{
+                    var state=response.data;
+                    if(state==1){
+                        self.$message({
+                            type:'info',
+                            message:'赞成功'
+                        });
+                        self.upvote=self.upvote+1;
+                        localStorage.setItem(votenote, username);
+
+                    }
+
+                }).catch((error)=>{
+                    console.log(error);
+                });
+
+            },
+            down()
+            {
+                var self=this;
+                var sid=self.id;
+                var username=localStorage.getItem('ms_username');
+                var votenote='encyclopedia-vote'+sid;
+                var flag=localStorage.getItem(votenote);
+                if(username==flag)
+                {
+                    self.$message({
+                        type:'info',
+                        message:'您已经对该条百科做出评价'
+                    });
+                    return ;
+                }
+                self.$axios({
+                    url:'/encyclopedia-down/'+sid,
+                    method:'get',
+                    baseURL: self.hostURL
+                }).then((response)=>{
+                    var state=response.data;
+                    if(state==1){
+                        self.$message({
+                            type:'info',
+                            message:'踩成功'
+                        });
+                        self.downvote=self.downvote+1;
+                        localStorage.setItem(votenote, username);
+                    }
+
+                }).catch((error)=>{
+                    console.log(error);
+                });
+
+            },
+
+            getLamaDetail(Lid){
+                var self = this;
+                var lId = {
+                    l_id: '',
+                }
+                lId.l_id = Lid;
+                console.log(lId);
+                self.$axios({
+                    url:'/wikipedia/findTermById',
+                    method:'post',
+                    baseURL:self.hostURL,
+                    data:lId
+                }).then((response)=>{
+                    self.lama = response.data;
+                    console.log(self.lama);
+                }).catch((error)=>{
                     self.$message({
                         type:'info',
                         message:'connect fail'
                     });
                 });
+            },
 
-            },
-            selected(onetype){
-              var self=this;
-              self.type=onetype;
-              self.search(onetype,1);
-            },
-            handleCurrentChange(){
-                var self = this;
-                console.log("current-Page:");
-                console.log(self.pageNum);
-                var type=self.type;
-                var pageNum=self.pageNum;
-                self.search(type,pageNum);
-            },
-            encyclopediaClick(item){
-                var self=this;
-                console.log(item.id);
-                self.$router.push('/user/encyclopedia-prop?'+item.id);
-            }
         },
-        
 
         mounted(){
-            var self = this;
+            var self= this;
             var user_name=localStorage.getItem("ms_username");
             if(user_name==""){
                 this.$router.replace('/login');
             }
-            //$(function(){ $(window).scrollTop(0)});
-            //self.getTypes();
-            self.selected("VR简介");
+            var tmp1 = location.href.split('?');
+            self.getLamaDetail(tmp1[1]);
         }
     }
 </script>
 
-<style>
+<style scoped>
+    .crumbs{
+        text-decoration: none;
+    }
+    .bread{
+        font-size: 16px;
+    }
+    .form-box{
+        width:300px;
+        margin-top:50px;
+        margin-left:0px;
+        box-shadow:0 0 8px 0
+        rgba(232,237,250,.9),0 2px 4px 0
+        rgba(232,237,250,.9);
+        padding:50px 50px 50px 10px;
+    }
+    .submit-btn{
+        width:220px;
+        margin-left:80px;
+    }
+    .submit-btn button{
+        width:100%;
 
+    }
+    .news-box{
+        padding: 28px;
+        width: 800px;
+        border: 1px solid #E1E1E1;
+        box-shadow: 0 0 2px rgba(0,0,0,.1);
+    }
+    .news-title{
+        font-size: 22px;
+        color: #287D7C;
+        line-height: 50px;
+        font-weight: normal;
+        display: block;
+    }
+    .borderline{
+        border-bottom: 1px dotted #BFBFBF;
+    }
+    .artinfo{
+        float: left;
+        padding-bottom: 5px;
+        color: #999;
+        margin: 0;
+        padding: 0;
+        display: block;
+    }
+    .author{
+        color: #666;
+    }
+    .article p{
+        padding: 30px 0 50px;
+        font-size: 18px;
+        color: #333;
+        line-height: 200%;
+        text-indent:2em;
+    }
+    .article {
+        display: inline-block;
+        line-height: 26px;
+        padding-bottom: 25px;
+    }
+    .news-img{
+        text-align: center;
+    }
+    .news-comment{
+        margin-top: 20px;
+        text-align: center;
+    }
+</style>
+
+<style scoped>
+    .crumbs{
+        text-decoration: none;
+    }
+    .form-box{
+        width:300px;
+        margin-top:50px;
+        margin-left:0px;
+        box-shadow:0 0 8px 0
+        rgba(232,237,250,.9),0 2px 4px 0
+        rgba(232,237,250,.9);
+        padding:50px 50px 50px 10px;
+    }
+    .submit-btn{
+        width:220px;
+        margin-left:80px;
+    }
+    .submit-btn button{
+        width:100%;
+    }
+
+    ul {
+        list-style: none;
+        display: block;
+        -webkit-margin-before: 1em;
+        -webkit-margin-after: 1em;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+        -webkit-padding-start: 40px;
+    }
+    li {
+        list-style-type:none;
+        padding-bottom:10px;
+        border-bottom: 1px solid #ccc;
+    }
+    a {
+        text-decoration: none;
+    }
+    a:hover, a:visited {
+        text-decoration: none;
+    }
+    .or-btn{
+        border: 1px solid #f2af00;
+        background: #f2af00;
+    }
+    .news-item,.eg-item{
+        margin-bottom: 24px;
+        overflow: hidden;
+    }
+    .news-list .news-item .link-tit {
+        color: #e9c06c;
+    }
+    .news-list .news-item img{
+        display: block;
+        float:left;
+        margin-right: 20px;
+        width:200px;
+
+    }
+    .news-list .news-item .news-title,.eg-title{
+        display: block;
+        font-size: 22px;
+        font-weight: lighter;
+        color: #3e3e3e;
+        line-height: 50px;
+        height: 50px;
+        overflow: hidden;
+    }
+    .news-list .news-desc {
+        display: block;
+        height: 60px;
+        overflow: hidden;
+        font-size: 14px;
+        color: #898989;
+        line-height: 1.5;
+    }
+
+    .pagination{
+        margin-left:50px;
+    }
+    .sidebar{
+        display: block;
+        position: absolute;
+        width: 400px;
+        right: 0;
+        top: 0;
+        bottom:0;
+        background: #2E363F;
+    }
+    .sidebar > ul {
+        height:100%;
+    }
+
+    .events {
+        padding: 0em 0em;
+    }
+    .title,.eg-title {
+        font-size: 2em;
+        color:#778899;
+        margin-bottom: 1em;
+        font-family: 'Marvel', sans-serif;
+    }
+    .news-title {
+        font-size: 2em;
+        color: #f2af00;
+        font-family: 'Marvel', sans-serif;
+    }
+    .event-text p {
+        font-size: 1em;
+        color:#777676;
+        line-height: 1.8em;
+        margin-top: 0.5em;
+    }
+    .event-text a {
+        font-size: 0.95em;
+        color: #fff;
+        background:#a2b040;
+        padding: 0.5em 1em;
+        display: inline-block;
+        margin-top: 0.8em;
+        border-radius: 3px;
+    }
+    .event-text a:hover {
+        background:#f2af00;
+    }
+    .events-grid {
+        margin-bottom:3em;
+    }
+    .wthree_head{
+        font-size:2em;
+        color:#f2af00;
+        text-align:center;
+        text-transform: capitalize;
+    }
+    .wthree_head i{
+        display: block;
+        text-align: center;
+        color: #fff;
+        background: #ff0101;
+        margin: 0 auto;
+        border-radius: 25px;
+        line-height: 1.5;
+        margin-bottom: .5em;
+    }
+    .wthree_head span{
+        display: block;
+        font-size: .5em;
+        padding: .5em 0;
+        border-top: 1px solid #f2af00;
+        border-bottom: 1px solid #f2af00;
+        width: 11%;
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        margin: 0 auto;
+    }
+
+    .el-input{
+        padding:8px;
+        width:95%;
+    }
+    #conSpace {
+        height:200px;
+        width:380px;
+        margin-left:10px;
+    }
 </style>

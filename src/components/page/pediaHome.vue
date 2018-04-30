@@ -13,9 +13,9 @@
         <div class="awa" id="about">
             <div class="pedia-container">
                 <div class="pedia-box">
-                    <el-button type="primary" class="refresh-btn" @click="showTerms()" v-if="isSearch">所有词条</el-button>
+                    <el-button class="refresh-btn" @click="showTerms()" v-if="isSearch">所有词条</el-button>
                     <el-button type="primary" class="search-btn" @click="searchTerms()">搜索</el-button>
-                    <input autofocus type="text" v-model="searchText" placeholder=" 输入词条关键字" />
+                    <input autofocus style="padding-left: 20px" type="text" v-model="searchText" placeholder=" 输入词条关键字" />
                     <!--<button class="search-btn" @click="search()">search</button>-->
                 </div>
 
@@ -196,30 +196,25 @@
 
             searchTerms(){
                 var self = this;
+                var searchCont = {
+                    keyword: '',
+                };
+                searchCont.keyword = self.searchText;
+                //console.log(searchCont);
                 self.$axios({
                     url:'/wikipedia/findTermsByName',
                     method:'post',
                     baseURL:self.hostURL,
-                    data:{
-                        keyword: self.searchText
-                    }
+                    data:searchCont
                 }).then((response)=>{
-                    if(response.data.length==0){
+                    if (response.data.length==0){
                         self.$message({
                             type:'info',
-                            message:'暂无词条'
+                            message:'暂无相关词条'
                         });
-                    }else{
-                        self.searchResult = [];
-                        if (response.data[i].verifyState === 1 ){
-                            self.searchResult.push({
-                                cId: response.data[i].cId,
-                                id: response.data[i].id,
-                                termName: response.data[i].termName,
-                                termAbstract: response.data[i].termAbstract,
-                                time: response.data[i].time,
-                            })
-                        }
+                    } else {
+                        self.searchResult = response.data;
+                        //console.log(self.searchResult);
                         self.isSearch = true;
                         self.noSearch = false;
                     }
@@ -233,7 +228,7 @@
 
             toTermDetail(id){
                 var self=this;
-                console.log(id);
+                //console.log(id);
                 self.$router.push('/user/pedia2?'+id);
             },
 
@@ -277,7 +272,7 @@
                             })
                         }
                     }
-                    console.log(self.allTerms);
+                    //console.log(self.allTerms);
                 }).catch((error) => {
                     console.log(error);
                 });
