@@ -7,44 +7,65 @@
             </el-breadcrumb>
         </div>
 
-        <div class="sidebar" v-if="seen">
-            <div class="container">
-                <h3 class="wthree_head">
-                    <i class="fa fa-envelope" aria-hidden="true"></i>
-                    <span>编辑</span>
-                </h3>
-                <el-input placeholder="词条名" id="keySpace" v-model="keyword"></el-input>
-                <el-input placeholder="词条属性" id="pkSpace" v-model="prop_keyword"></el-input>
-                <textarea placeholder="内容" id="conSpace" v-model="content"></textarea>
-                <el-button class="or-btn" style="margin-left:30%;margin-top:10px" type="primary" @click="submit()">提交</el-button>
-                <el-button class="or-btn" style="margin-top:10px" type="primary" @click="close()">关闭</el-button>
-            </div>
-        </div>
+        <!--<div class="sidebar" v-if="seen">-->
+            <!--<h3 class="wthree_head">-->
+                <!--<br/><br/><br/>-->
+                <!--<span>报错</span>-->
+            <!--</h3><br/><br/>-->
+            <!--<textarea placeholder="报错内容" id="conSpace" v-model="errorForm.e_con"></textarea>-->
+            <!--<el-button class="or-btn" style="margin-left:30%;margin-top:10px" type="primary" @click="submiterror()">提交</el-button>-->
+            <!--<el-button class="or-btn" style="margin-top:10px" type="primary" @click="close()">关闭</el-button>-->
+        <!--</div>-->
 
         <div class="events">
-            <div class="container">
-                <div class="news-box">
-                    <h2 class="title">{{keyword}}</h2>
-                    <div class="borderline clearfix">
-                        <p class="artinfo"><span class="author"></span> </p>
+            <div>
+                <div>
+                    <div><br/>
+                        <h1 class="title">{{lama.termName}}</h1>
+                        <a class="search-link">发布时间：{{ lama.time }}</a>
+                        <br/>
+                    </div>
+
+                    <div class="sub_title">
+                        <h2 class="title_text">
+                            <span>简述</span>
+                        </h2>
                     </div>
                     <div class="article">
-                        <ul class="news-list">
-                            <li class="news-item" v-for="encyclopedia_prop in encyclopedia_propData">
-                                <a href="javascript:void(0);" class="link-tit" title="">
-                                    <span class="news-title">{{encyclopedia_prop.prop_keyword}}</span>
-                                    <span class="news-desc">{{encyclopedia_prop.content}}</span>
-                                </a>
-                                <el-button style="float:right" type="warning" @click="edit(encyclopedia_prop)">编辑</el-button>
-                            </li>
-                        </ul>
+                        <div class="news-list">
+                            <lidiv class="news-item">
+                                <p class="news-desc">{{lama.termAbstract}}</p>
+                            </lidiv>
+                        </div>
+                    </div>
+                    <div class="sub_title">
+                        <h2 class="title_text">
+                            <span>内容</span>
+                        </h2>
+                    </div>
+                    <div class="article">
+                        <div class="news-list">
+                            <div class="news-item">
+                                <p class="news-desc" id="Content"></p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="news-comment">
                         <el-button-group>
-                            <el-button type="primary" icon="circle-check" @click="up()">赞{{upvote}}</el-button>
-                            <el-button type="primary" @click="down()">踩{{downvote}}<i class="el-icon-circle-cross el-icon--right"></i></el-button>
+                            <el-button type="warning" @click="edit()">报错</el-button>
                         </el-button-group>
+                    </div>
+                    <div v-if="seen" class="error">
+                        <h3 class="wthree_head"><br/>
+                            <span>报错</span>
+                        </h3>
+                        <br/>
+                        <textarea placeholder="报错内容" class="conSpace" v-model="errorForm.e_con"></textarea>
+                        <div class="errorbtn">
+                            <el-button class="or-btn" style="margin-left:43%" type="primary" @click="submiterror()">提交</el-button>
+                            <el-button class="or-btn" type="primary" @click="close()">关闭</el-button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -88,18 +109,22 @@
 
                     }
                 ],
-                lama:[
-                    {
-                        cId:'1',
-                        className: "简介",
-                        id: '1',
-                        termName: "简介1",
-                        termAbstract:"简介1的简介",
-                        termContent:"简介1的内容",
-                        verifyState: 1,
-                        time: '2018-04-22 23:00:58',
-                    }
-                ]
+                lama: {
+                    cId:'1',
+                    className: "简介",
+                    id: '2',
+                    termName: "简介1",
+                    termAbstract:"简介1的简介",
+                    termContent:"<p>rtbnf</p>",
+                    verifyState: 1,
+                    time: '2018-04-22 23:00:58',
+                },
+                errorForm:{
+                    l_id:'1',
+                    e_con:'',
+                    user_name:'wo',
+                },
+
             }
         },
         methods:{
@@ -208,44 +233,29 @@
                 });
 
             },
-            edit(encyclopedia_prop){
+            edit(){
                 var self=this;
                 self.seen=true;
-                self.id=encyclopedia_prop.id;
-                self.keyword=encyclopedia_prop.keyword;
-                self.prop_id=encyclopedia_prop.prop_id;
-                self.prop_keyword=encyclopedia_prop.prop_keyword;
-                self.content=encyclopedia_prop.content;
-                self.changenote=self.changenote;
-
-
-
+                self.errorForm.l_id = self.lama.id;
+                self.errorForm.user_name = localStorage.getItem("ms_username");
             },
             close(){
                 var self=this;
                 self.seen=false;
             },
-            submit(){
+            submiterror(){
                 var self=this;
-                var submitdata={
-                    id:"1",
-                    prop_id:"1",
-                    keyword:"",
-                    prop_keyword:"",
-                    content:"a",
-                    changenote:"a1",
-                };
-                submitdata.id=self.id;
-                submitdata.prop_id=self.prop_id;
-                submitdata.keyword=self.keyword;
-                submitdata.prop_keyword=self.prop_keyword;
-                submitdata.content=self.content;
-                submitdata.changenote=localStorage.getItem('ms_username');
+                var err={
+                    l_id: self.errorForm.l_id,
+                    e_con: self.errorForm.e_con,
+                    user_name: self.errorForm.user_name,
+                }
+                //console.log(err);
                 self.$axios({
-                    url:'/encyclopedia-propChange',
+                    url:'/wikipedia/providePediaError',
                     method:'post',
                     baseURL: self.hostURL,
-                    data:submitdata
+                    data:err,
                 }).then((response)=>{
                     var state=response.data;
                     if(state==1){
@@ -254,12 +264,21 @@
                             message:'提交成功'
                         });
                         self.close();
+                    } else {
+                        self.$message({
+                            type:'error',
+                            message:'提交失败，请重试'
+                        })
                     }
                 }).catch((error)=>{
                     console.log(error);
+                    self.$message({
+                        type:'info',
+                        message:'connect fail'
+                    });
                 });
-
             },
+
             up()
             {
                 var self=this;
@@ -338,7 +357,7 @@
                     l_id: '',
                 }
                 lId.l_id = Lid;
-                console.log(lId);
+                //console.log(lId);
                 self.$axios({
                     url:'/wikipedia/findTermById',
                     method:'post',
@@ -346,7 +365,10 @@
                     data:lId
                 }).then((response)=>{
                     self.lama = response.data;
-                    console.log(self.lama);
+                    //console.log(self.lama);
+                    var insText = self.lama.termContent;
+                    //console.log(insText);
+                    document.getElementById("Content").innerHTML = insText;
                 }).catch((error)=>{
                     self.$message({
                         type:'info',
@@ -359,12 +381,16 @@
 
         mounted(){
             var self= this;
+            //console.log(self.lama);
             var user_name=localStorage.getItem("ms_username");
             if(user_name==""){
                 this.$router.replace('/login');
             }
             var tmp1 = location.href.split('?');
+            var insText = self.lama.termContent;
+            document.getElementById("Content").innerHTML = insText;
             self.getLamaDetail(tmp1[1]);
+
         }
     }
 </script>
@@ -385,14 +411,7 @@
         rgba(232,237,250,.9);
         padding:50px 50px 50px 10px;
     }
-    .submit-btn{
-        width:220px;
-        margin-left:80px;
-    }
-    .submit-btn button{
-        width:100%;
 
-    }
     .news-box{
         padding: 28px;
         width: 800px;
@@ -442,22 +461,7 @@
 </style>
 
 <style scoped>
-    .crumbs{
-        text-decoration: none;
-    }
-    .form-box{
-        width:300px;
-        margin-top:50px;
-        margin-left:0px;
-        box-shadow:0 0 8px 0
-        rgba(232,237,250,.9),0 2px 4px 0
-        rgba(232,237,250,.9);
-        padding:50px 50px 50px 10px;
-    }
-    .submit-btn{
-        width:220px;
-        margin-left:80px;
-    }
+
     .submit-btn button{
         width:100%;
     }
@@ -469,12 +473,12 @@
         -webkit-margin-after: 1em;
         -webkit-margin-start: 0px;
         -webkit-margin-end: 0px;
-        -webkit-padding-start: 40px;
+        -webkit-padding-start: 30px;
     }
     li {
         list-style-type:none;
         padding-bottom:10px;
-        border-bottom: 1px solid #ccc;
+        /*border-bottom: 1px solid #ccc;*/
     }
     a {
         text-decoration: none;
@@ -485,12 +489,13 @@
     .or-btn{
         border: 1px solid #f2af00;
         background: #f2af00;
+        margin-top:10px
     }
     .news-item,.eg-item{
         margin-bottom: 24px;
         overflow: hidden;
     }
-    .news-list .news-item .link-tit {
+    .news-list .news-item {
         color: #e9c06c;
     }
     .news-list .news-item img{
@@ -511,10 +516,10 @@
     }
     .news-list .news-desc {
         display: block;
-        height: 60px;
+        /*height: 60px;*/
         overflow: hidden;
         font-size: 14px;
-        color: #898989;
+        color: black;
         line-height: 1.5;
     }
 
@@ -537,12 +542,49 @@
     .events {
         padding: 0em 0em;
     }
-    .title,.eg-title {
-        font-size: 2em;
+    .title{
+        font-size: 4em;
         color:#778899;
-        margin-bottom: 1em;
         font-family: 'Marvel', sans-serif;
+        margin-bottom: 0px;
+        margin-left: 30px;
     }
+
+    .search-link {
+        color: #007e28;
+        float: right;
+    }
+
+    .reporterrorbtn {
+        /*display: inline-block;*/
+        /*float: right;*/
+    }
+
+    .sub_title {
+        display: block;
+        clear: both;
+        zoom: 1;
+        overflow: hidden;
+        border-left: 12px solid #4f9cee;
+        line-height: 24px;
+        font-size: 24px;
+        font-weight: 400;
+        /*background: url(https://bkssl.bdimg.com/static/wiki-lemma/normal/resource/img/paraTitle-line_c5e6d61.png);*/
+        /*margin: 35px 0 15px -30px;*/
+        position: relative;
+    }
+
+    .title_text {
+        float: left;
+        display: block;
+        padding: 0 8px 0 18px;
+        line-height: 40px;
+        font-size: 30px;
+        font-weight: 400;
+        color: #000;
+        background: #fff;
+    }
+
     .news-title {
         font-size: 2em;
         color: #f2af00;
@@ -566,24 +608,12 @@
     .event-text a:hover {
         background:#f2af00;
     }
-    .events-grid {
-        margin-bottom:3em;
-    }
+
     .wthree_head{
         font-size:2em;
         color:#f2af00;
         text-align:center;
         text-transform: capitalize;
-    }
-    .wthree_head i{
-        display: block;
-        text-align: center;
-        color: #fff;
-        background: #ff0101;
-        margin: 0 auto;
-        border-radius: 25px;
-        line-height: 1.5;
-        margin-bottom: .5em;
     }
     .wthree_head span{
         display: block;
@@ -591,7 +621,7 @@
         padding: .5em 0;
         border-top: 1px solid #f2af00;
         border-bottom: 1px solid #f2af00;
-        width: 11%;
+        width: 30%;
         text-transform: uppercase;
         letter-spacing: 5px;
         margin: 0 auto;
@@ -601,9 +631,19 @@
         padding:8px;
         width:95%;
     }
-    #conSpace {
+    .conSpace {
         height:200px;
         width:380px;
-        margin-left:10px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .error {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .errorbtn {
+        margin-left: auto;
+        margin-right: auto;
     }
 </style>

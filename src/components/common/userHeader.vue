@@ -116,10 +116,6 @@
                                index: '/user/pedia',
                                title: '百科搜索'
                            },
-                           {
-                               index: '/user/pedia2',
-                               title: '目录浏览'
-                           }
                        ]
                     },
                     {
