@@ -98,14 +98,71 @@
 
     入参（问卷id q_id:int）
     
-    出参（题目id:questionId，题目类型:type，题目:question，选项:choices）
+    出参（quests:[
+                 {
+                   q_id:1,
+                   e_id:1,
+                   question:'单选题1',
+                   type:1,
+                   subs:[
+                     {choices:'A选项'},
+                     {choices:'B选项'},
+                     {choices:'C选项'}
+                   ],
+                 },
+                 {
+                   q_id:1,
+                   e_id:2,
+                   question:'多选题',
+                   type:2,
+                   subs:[
+                     {choices:'A选项A'},
+                     {choices:'B选项B'},
+                     {choices:'C选项C'}
+                   ],
+                 },
+                 {
+                   q_id:1,
+                   e_id:3,
+                   question:'问答题1',
+                   type:3,
+                 },
+               ],）
     
 ### 提交作答结果
 /question/giveAnswer
 
 每成功执行一次此方法，对应题目的“总作答人数”+1。若是单选/多选题，则作答表添加一条记录且题目表中选项所对应的“选择人数”+1；若是问答题，则新添加一条记录。
 
-    入参（问卷id q_id:int，题目id e_id:int，选项 e_sel:string，回答内容 e_con:string，用户名 u_name:string，用户IP u_ip:string）
+    入参（answers:[
+                 {
+                   "q_id": "1",
+                   "e_id": 1,
+                   "e_sel": "B",
+                   "e_con": "",
+                   "u_name": "Cjunqi",
+                   "u_ip": "1.1.1.1"
+                 },
+                 {
+                   "q_id": "1",
+                   "e_id": 2,
+                   "e_sel": [
+                     "A",
+                     "B"
+                   ],
+                   "e_con": "",
+                   "u_name": "Cjunqi",
+                   "u_ip": "1.1.1.1"
+                 },
+                 {
+                   "q_id": "1",
+                   "e_id": 3,
+                   "e_sel": "",
+                   "e_con": "人头还是让他",
+                   "u_name": "Cjunqi",
+                   "u_ip": "1.1.1.1"
+                 }
+               ]）
     
     出参（成功1/失败0）
     

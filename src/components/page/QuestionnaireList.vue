@@ -27,7 +27,7 @@
             <!--<p>问卷列表</p>-->
             <ul class="quest-list">
                 <li class="quest-item" v-for="quest in questList" @click="questClick(quest)">
-                    <div v-if="quest.activated === 1" id="{{quest.id}}">
+                    <div v-if="quest.activated === 1" :id="quest.id">
                         <a href="javascript:void(0);" class="link-tit" title="">
                             <span class="quest-name">{{quest.name}}</span>
                         </a>
@@ -36,39 +36,6 @@
                     </div>
                 </li>
             </ul>
-
-            <!--<hr>-->
-            <!--<div class="selector">-->
-                <!--<div class="protype_selector">-->
-                    <!--<el-select v-model="pro_type.value" placeholder="请选择问卷" @change="sendProType()">-->
-                        <!--<el-option v-for="item in pro_type.opts" :key="item.value" :label="item.label" :value="item.value">-->
-                        <!--</el-option>-->
-                    <!--</el-select>-->
-                <!--</div>-->
-                <!--&lt;!&ndash;<div class="prosales_selector" >-->
-                    <!--<el-select v-model="pro_sales.value" placeholder="请选择产品型号" :disabled="pro_sales_disable">-->
-                        <!--<el-option v-for="item in pro_sales.opts" :key="item.value" :label="item.label" :value="item.value">-->
-                        <!--</el-option>-->
-                    <!--</el-select>-->
-                <!--</div>&ndash;&gt;-->
-            <!--</div>-->
-            <!--<div class='questionbox' v-show="display_box">-->
-                <!--<form id="questions">-->
-                    <!--<div class="single_question" v-for="(a,index) in answ_data.answers">-->
-                        <!--<p style="margin-bottom:10px">{{a.question}}</p>-->
-                        <!--<div class="answer" v-if="ques_data.questions[index].questiontype=='single'">-->
-                            <!--<label class="left_radio"><el-radio class="radio" v-model="a.answer" label="1">是</el-radio></label>-->
-                            <!--<el-radio class="radio" v-model="a.answer" label="2">否 </el-radio>-->
-                        <!--</div>-->
-                        <!--<div class="essay-answer" v-else-if="ques_data.questions[index].questiontype=='essay'">-->
-                            <!--<el-input type="textarea" :row="3" placeholder="请输入内容" v-model="a.answer" resize=none></el-input>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</form>-->
-                <!--<div class="submit_btn">-->
-                    <!--<el-button type="primary" @click="sendQuestionaire()">提交问卷</el-button>-->
-                <!--</div>-->
-            <!--</div>-->
         </div>
      
          
@@ -91,18 +58,21 @@
                         name:'问卷1',
                         activated:1,
                         number:20,
+                        description:'lalala'
                     },
                     {
                         id:2,
                         name:'问卷2',
                         activated:1,
                         number:20,
+                        description:'lalala'
                     },
                     {
                         id:3,
                         name:'问卷3',
                         activated:1,
                         number:20,
+                        description:'lalala'
                     },
                 ],
 
@@ -358,7 +328,7 @@
     }
 </script>
 
-<style>
+<style scoped>
 .crumbs{
     text-decoration: none;
 }

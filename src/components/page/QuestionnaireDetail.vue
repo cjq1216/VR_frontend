@@ -6,198 +6,57 @@
                 <el-breadcrumb-item>问卷</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class="questionnaire-box">
+        <div v-if="isLoading">加载中...</div>
+        <div v-else class="questionnaire-box">
             <div class="questionnaire-title">{{q_name}}</div>
-
-
-            <!--<hr>-->
-            <!--<div class="selector">-->
-            <!--<div class="protype_selector">-->
-            <!--<el-select v-model="pro_type.value" placeholder="请选择问卷" @change="sendProType()">-->
-            <!--<el-option v-for="item in pro_type.opts" :key="item.value" :label="item.label" :value="item.value">-->
-            <!--</el-option>-->
-            <!--</el-select>-->
-            <!--</div>-->
-            <!--&lt;!&ndash;<div class="prosales_selector" >-->
-            <!--<el-select v-model="pro_sales.value" placeholder="请选择产品型号" :disabled="pro_sales_disable">-->
-            <!--<el-option v-for="item in pro_sales.opts" :key="item.value" :label="item.label" :value="item.value">-->
-            <!--</el-option>-->
-            <!--</el-select>-->
-            <!--</div>&ndash;&gt;-->
-            <!--</div>-->
-
-            <!--<div class='questionbox' v-show="display_box">-->
-            <!--<form id="questions">-->
-            <!--<div class="single_question" v-for="(a,index) in answ_data.answers">-->
-            <!--<p style="margin-bottom:10px">{{a.question}}</p>-->
-            <!--<div class="answer" v-if="ques_data.questions[index].questiontype=='single'">-->
-            <!--<label class="left_radio"><el-radio class="radio" v-model="a.answer" label="1">是</el-radio></label>-->
-            <!--<el-radio class="radio" v-model="a.answer" label="2">否 </el-radio>-->
-            <!--</div>-->
-            <!--<div class="essay-answer" v-else-if="ques_data.questions[index].questiontype=='essay'">-->
-            <!--<el-input type="textarea" :row="3" placeholder="请输入内容" v-model="a.answer" resize=none></el-input>-->
-            <!--</div>-->
-            <!--</div>-->
-            <!--</form>-->
-            <!--<div class="submit_btn">-->
-            <!--<el-button type="primary" @click="sendQuestionaire()">提交问卷</el-button>-->
-            <!--</div>-->
-            <!--</div>-->
-
         </div>
         <br/>
-
         <div class="question">
             <form id="questions">
                 <div class="quest">
                     <div v-for="quest in quests">
-                        <div v-if="quest.subs">
-                            <h4>{{quest.e_id}}.&nbsp;{{quest.question}}</h4>
-                            <div class="single" v-if="quest.type===1">
-                                <el-radio-group>
-                                    <div v-for="(choice,i) in quest.subs">
-                                        <el-radio :key="i" :label="choice.choices">{{choice.choices}}</el-radio>
-                                    </div>
-                                </el-radio-group>
-                            </div>
-                            <div class="plural" v-if="quest.type===2">
-                                <el-checkbox-group>
-                                    <div v-for="(choice,i) in quest.subs">
-                                        <el-checkbox :key="i" :label="choice.choices">{{choice.choices}}</el-checkbox>
-                                    </div>
-                                </el-checkbox-group>
+                        <h4>{{quest.e_id}}.&nbsp;{{quest.question}}</h4>
+                        <div class="single" v-if="quest.type===1">
+                            <div v-for="choice in quest.subs">
+                                <label :for="choice.choices">
+                                    <input :name="quest.e_id" :id="choice.choices" :value="choice.choices" v-model="answer[quest.e_id].e_sel" type="radio">&nbsp;{{choice.choices}}
+                                </label>
                             </div>
                         </div>
-                        <div v-else>
-                            <h4>{{quest.e_id}}.&nbsp;{{quest.question}}</h4>
-                            <el-input
-                                    type="textarea"
-                                    :rows="4"
-                                    :cols="50"
-                                    placeholder="请输入内容"
-                                    v-model="textarea">
-                            </el-input>
+                        <div class="plural" v-if="quest.type===2">
+                            <div v-for="choice in quest.subs">
+                                <label :for="choice.choices">
+                                    <input :name="quest.e_id" :id="choice.choices" :value="choice.choices" v-model="answer[quest.e_id].e_sel" type="checkbox">&nbsp;{{choice.choices}}
+                                </label>
+                            </div>
                         </div>
+                        <div class="plural" v-if="quest.type===3">
+                            <textarea :rows="4" :cols="50" placeholder="请输入内容" v-model="answer[quest.e_id].e_con"></textarea>
+                        </div>
+                        <br/>
                     </div>
                 </div>
             </form>
             <br/>
             <div class="submit_btn">
-                <el-button type="primary" @click="sendQuestionaire()">提交问卷</el-button>
+                <el-button type="primary" @click="sendQuestionnaire()">提交问卷</el-button>
             </div>
         </div>
-
     </div>
 </template>
-
-
 <script>
     export default {
-        data: function () {
+        data: function(){
             return {
                 hostURL:'/VR',
-                q_name:'test',
-                examsData:[
-                    {
-                        questionId:1,
-                        type:1,
-                        question:'这是一道单选题',
-                        choices:'A选项',
-                    },
-                    {
-                        questionId:1,
-                        type:1,
-                        question:'这是一道单选题',
-                        choices:'B选项',
-                    },
-                    {
-                        questionId:1,
-                        type:1,
-                        question:'这是一道单选题',
-                        choices:'C选项',
-                    },
-                    {
-                        questionId:2,
-                        type:2,
-                        question:'这是一道多选题',
-                        choices:'A选项',
-                    },
-                    {
-                        questionId:2,
-                        type:2,
-                        question:'这是一道多选题',
-                        choices:'B选项',
-                    },
-                    {
-                        questionId:2,
-                        type:2,
-                        question:'这是一道多选题',
-                        choices:'C选项',
-                    },
-                    {
-                        questionId:3,
-                        type:3,
-                        question:'这是一道问答题',
-                        choices:'',
-                    },
-                    {
-                        questionId:4,
-                        type:3,
-                        question:'这是一道问答题',
-                        choices:'',
-                    },
-                ],
-                quests:[
-                    {
-                        q_id:1,
-                        e_id:1,
-                        question:'单选题1',
-                        type:1,
-                        subs:[
-                            {choices:'A选项'},
-                            {choices:'B选项'},
-                            {choices:'C选项'}
-                        ],
-                    },
-                    {
-                        q_id:1,
-                        e_id:2,
-                        question:'多选题',
-                        type:2,
-                        subs:[
-                            {choices:'A选项A'},
-                            {choices:'B选项B'},
-                            {choices:'C选项C'}
-                        ],
-                    },
-                    {
-                        q_id:1,
-                        e_id:3,
-                        question:'问答题1',
-                        type:3,
-                    },
-                ],
-                answer:[
-                    {
-                        q_id:1,
-                        e_id:1,
-                        e_sel:'A',
-                        e_con:'',
-                        u_name:localStorage.getItem('ms_username'),
-                        u_ip:'1.1.1.1',
-                    },
-                    {
-                        q_id:1,
-                        e_id:2,
-                        e_sel:'',
-                        e_con:'lalala',
-                        u_name:localStorage.getItem('ms_username'),
-                        u_ip:'1.1.1.1',
-                    },
-                ],
+                q_id: '1',
+                q_name: 'test',
+                quests: [],
+                answer: {},
+                isLoading: false,
             }
         },
-
+        name: "QuestDetial",
         methods:{
             codeParsing(code) {
                 let self = this;
@@ -264,10 +123,11 @@
                         break;
                 }
             },
-            getData(q_id){
+
+            fetchQuestionnaire(q_id) {
                 var self = this;
                 //self.questList=[];
-                self.$axios({
+                return self.$axios({
                     url:'/question/getQuestions',
                     method:'post',
                     baseURL:self.hostURL,
@@ -275,63 +135,188 @@
                         q_id:q_id,
                     }
                 }).then((response)=>{
-                    self.examsData = [];
-                    self.examsData= response.data;
-                    self.answer = [];
-                    //console.log(returnCitySN["cip"]+','+returnCitySN["cname"]);
-                    for(var i=0;i<self.examsData.length;i++){
-                        self.answer.push({
-                            q_id:q_id,
-                            e_id:self.examsData[i].questionId,
-                            u_name:localStorage.getItem('ms_username'),
-                            e_sel:self.examsData[i].choices,
-                            e_con:'',
-                            u_ip:'1.1.1.1',
-                        })
-                    };
+                    //console.log(response.data);
+                    return response.data;
                 }).catch((error)=>{
                     self.$message({
                         type:'info',
                         message:'无法获取问卷，请重试'
                     });
                 });
+                // const p = new Promise((resolve, reject) => {
+                //   setTimeout(() => {
+                //     resolve()
+                //   }, 2000)
+                // })
+                // return p.then(() => {
+                //   return {
+                //     quests: [
+                //       {
+                //         q_id: 1,
+                //         e_id: 1,
+                //         question: '单选题1',
+                //         type: 1,
+                //         subs: [
+                //           {choices: 'A选项'},
+                //           {choices: 'B选项'},
+                //           {choices: 'C选项'}
+                //         ],
+                //       },
+                //       {
+                //         q_id: 1,
+                //         e_id: 2,
+                //         question: '多选题',
+                //         type: 2,
+                //         subs: [
+                //           {choices: 'A选项A'},
+                //           {choices: 'B选项B'},
+                //           {choices: 'C选项C'}
+                //         ],
+                //       },
+                //       {
+                //         q_id: 1,
+                //         e_id: 3,
+                //         question: '问答题1',
+                //         type: 3,
+                //         subs: '',
+                //       },
+                //       {
+                //         q_id: 1,
+                //         e_id: 4,
+                //         question: '单选题2',
+                //         type: 1,
+                //         subs: [
+                //           {choices: 'A选项a'},
+                //           {choices: 'B选项b'},
+                //           {choices: 'C选项c'}
+                //         ],
+                //       },
+                //       {
+                //         q_id: 1,
+                //         e_id: 5,
+                //         question: '多选题2',
+                //         type: 2,
+                //         subs: [
+                //           {choices: 'A'},
+                //           {choices: 'B'},
+                //           {choices: 'C'}
+                //         ],
+                //       },
+                //       {
+                //         q_id: 1,
+                //         e_id: 6,
+                //         question: '问答题2',
+                //         type: 3,
+                //         subs: '',
+                //       },
+                //     ],
+                //   }
+                // })
             },
 
-            sendQuestionaire(){
-                var self = this;
-                var send=true;
-                for(var i=0;i<self.answer.length;i++){
-                    if(self.answer[i].answer==""){
-                        send=false;
-                        break;
+            validate() {
+                let isCompleted = true
+                for (let i = 0; i < this.quests.length; i++) {
+                    const quest = this.quests[i]
+                    switch (quest.type) {
+                        case 1:
+                            if (!this.answer[quest.e_id].e_sel) {
+                                isCompleted = false
+                            }
+                            break
+                        case 2:
+                            if (this.answer[quest.e_id].e_sel.length <= 0) {
+                                isCompleted = false
+                            }
+                            break
+                        case 3:
+                            if (!this.answer[quest.e_id].e_con) {
+                                isCompleted = false
+                            }
+                            break
+                        default:
+                        // do nothing
+                    }
+                    if (!isCompleted) {
+                        break
                     }
                 }
-                if(send){
-                    for(var i=0;i<self.answer.length;i++){
-                        self.answer[i].u_name=localStorage.getItem('ms_username');
-                        self.answer[i].u_ip='1.1.1.2';
-                    }
-                    console.log(self.answer);
-                    self.$axios({
+                return isCompleted
+            },
+
+            sendQuestionnaire(){
+                const isCompleted = this.validate()
+                if (!isCompleted) {
+                    alert('问卷没有填写完全')
+                } else {
+                    const answerAry = [];
+                    const plainAnswer = JSON.parse(JSON.stringify(this.answer));
+                    Object.keys(plainAnswer).forEach(key => {
+                        const { e_sel } = plainAnswer[key]
+                        if (!Array.isArray(e_sel)) {
+                            plainAnswer[key].e_sel = [e_sel]
+                        }
+                        answerAry.push(plainAnswer[key])
+                    })
+                    // Object.keys(this.answer).forEach((key) => {
+                    //     answerAry.push(this.answer[key])
+                    // })
+                    // let answers = JSON.stringify(answerAry, null, '  ');
+                    console.log(answerAry);
+                    this.$axios({
                         url:'/question/giveAnswer',
                         method:'post',
-                        baseURL: self.hostURL,
-                        data: self.answer
+                        baseURL:this.hostURL,
+                        data:answerAry
                     }).then((response)=>{
-                        //localStorage.setItem('pro_type',self.pro_type.value);
-                        // localStorage.setItem('pro_sale',self.pro_sales.value);
-                        self.$router.replace('/user/questionnairelist');
+                        this.$message({
+                            type:'info',
+                            message:'提交成功'
+                        });
+                        this.$router.push('/user/questionnairelist');
                     }).catch((error)=>{
-                        console.log(error);
+                        this.$message({
+                            type:'info',
+                            message:'提交失败，请重试'
+                        });
                     });
-                }else{
-                    self.$message('还有内容未填写！');
                 }
             },
 
+            fetchData(q_id) {
+                this.isLoading = true;
+                this.fetchQuestionnaire(q_id).then((data) => {
+                    const answer = {}
+                    const u_name = localStorage.getItem('ms_username')
+                    const u_ip = returnCitySN["cip"];
+                    data.quests.forEach((quest) => {
+                        //console.log(quest)
+                        const key = quest.e_id;
+                        answer[key] ={
+                            q_id: this.q_id,
+                            e_id: quest.e_id,
+                            e_sel: [],
+                            e_con: '',
+                            u_name,
+                            u_ip,
+                        }
+                        // if (quest.type === 1) {
+                        //     answer[key].e_sel = []
+                        // } else if (quest.type === 2) {
+                        //     answer[key].e_sel = []
+                        // }
+                    });
+                    this.answer = answer;
+                    this.quests = data.quests;
+                    this.isLoading = false
+                }).catch(err => {
+                    this.isLoading = false;
+                    console.error(err)
+                })
+            }
         },
 
-        mounted(){
+        mounted() {
             var self= this;
             var user_name=localStorage.getItem("ms_username");
             if(user_name==""){
@@ -339,32 +324,35 @@
             }
             var tmp1 = location.href.split('?');
             var tmp2 = tmp1[1].split('&');
-            var q_id = tmp2[0];
+            self.q_id = tmp2[0];
             self.q_name = tmp2[1];
-            console.log(q_id);
+            console.log(self.q_id);
             console.log(self.q_name);
-            self.getData(q_id);
-            //console.log(examsData);
-            //self.getQuest(q_name);
+            //self.getData(q_id);
+            self.fetchData(self.q_id)
         },
 
-        name: "questionnaire-detail"
     }
 </script>
 
 <style scoped>
-.questionnaire-box{
-    padding: 28px;
-    width: 800px;
-    border: 1px solid #E1E1E1;
-    box-shadow: 0 0 2px rgba(0,0,0,.1);
-}
-.questionnaire-title{
-    font-size: 22px;
-    color: #287D7C;
-    line-height: 50px;
-    font-weight: normal;
-    display: block;
-    text-align: center;
-}
+    .questionnaire-box{
+        padding: 28px;
+        width: 800px;
+        border: 1px solid #E1E1E1;
+        box-shadow: 0 0 2px rgba(0,0,0,.1);
+    }
+    .questionnaire-title{
+        font-size: 22px;
+        color: #287D7C;
+        line-height: 50px;
+        font-weight: normal;
+        display: block;
+        text-align: center;
+    }
+
+    .questionnaire__radio {
+        padding: 0px;
+
+    }
 </style>
