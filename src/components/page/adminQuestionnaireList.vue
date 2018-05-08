@@ -191,7 +191,7 @@
                 var self = this;
                 console.log("go to QuestionnaierEditor!");
                 console.log(quest.id);
-                self.$router.push('/admin/adminQuestionnaireEditor?'+quest.id);
+                self.$router.push('/admin/adminQuestionnaireEditor?'+quest.id+'&'+quest.name+'&'+quest.description);
             },
 
             goToAnalyze(quest){
@@ -222,6 +222,7 @@
                             message:'删除问卷失败！'
                         })
                     };
+                    this.$router.push('/admin/adminQuestionnairelist');
                 }).catch((error)=>{
                     self.$message({
                         type:'info',

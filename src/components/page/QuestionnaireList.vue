@@ -12,10 +12,11 @@
                     <div class="survey-left pull-left">
                         <div id="search" class="search pull-left">
                             <form @submit.prevent="searchQ()">
+                                <el-button type="warning" @click="getQuest()">刷新</el-button>
                                 <input v-model="search.value" type="text"/>
                                 <input type="submit" name="btnSub" id="btnSub" class="search-icon"/>
-                            </form>
 
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -37,8 +38,8 @@
                 </li>
             </ul>
         </div>
-     
-         
+
+
     </div>
 </template>
 
@@ -126,7 +127,7 @@
                 // pro_sales_disable:true
             }
         },
-    
+
         methods:{
             codeParsing(code) {
                 let self = this;
@@ -212,25 +213,30 @@
                 });
             },
             searchQ(){
-                console.log(this.search.value);
                 var q_name_p = this.search.value;
+                //console.log(q_name_p);
                 var self = this;
+                var qname={
+                    q_name_part:''
+                };
+                qname.q_name_part = q_name_p;
+                //console.log(qname);
                 self.$axios({
                     url:'/question/getQuestionaire',
                     method:'post',
                     baseURL:self.hostURL,
-                    data:{
-                        q_name_part:q_name_p,
-                    }
+                    data:qname
                 }).then((response)=>{
-                    self.questList = [];
-                    self.questList= response.data;
-                    console.log(questList);
-                }).catch((error)=> {
-                    self.$message({
-                        type: 'info',
-                        message: 'connect fail'
-                    });
+                    if (response.data.length===0){
+                        self.$message({
+                            type:'info',
+                            message:'暂无相关问卷'
+                        });
+                    } else {
+                        self.questList = [];
+                        self.questList = response.data;
+                        console.log(questList);
+                    }
                 });
             },
             questClick(quest){
@@ -329,145 +335,144 @@
 </script>
 
 <style scoped>
-.crumbs{
-    text-decoration: none;
-}
-.bread{
-    font-size: 16px;
-}
-#questions{
-    margin-left: 30px;
-}
-.questionnaire {
-    position: relative;
-}
-.my-container {
-    width: 964px;
-    margin: 0 auto;
-}
-.survey-wrapper {
-    position: relative;
-    margin: 40px 0;
-}
-.clearfix {
-    zoom: 1;
-}
-.survey-left {
-    width: 890px;
-}
-.pull-left {
-    float: left !important;
-}
-.search {
-    position: relative;
-}
-input {
-    width: 300px;
-    height: 25px;
-    line-height: 1.6;
-    padding: 8px 0 8px 16px;
-    font-size: 13px;
-    color: #b2b2b2;
-    border-radius: 100px;
-    border: 1px solid #30a6f5;
-}
-.search-icon {
-    position: absolute;
-    top: 11px;
-    right: 11px;
-    width: 25px;
-    height: 20px;
-    margin: 0;
-    border: none;
-    cursor: pointer;
-    background: url("https://www.wjx.cn/images/newimg/pic-1/search.png") no-repeat center;
-}
-.survey-folder {
-    margin: 20px 0;
-    border-top: 2px solid #f5f7fa;
-}
-ul {
-    list-style: none;
-    display: block;
-    -webkit-margin-before: 1em;
-    -webkit-margin-after: 1em;
-    -webkit-margin-start: 0px;
-    -webkit-margin-end: 0px;
-}
-li {
-    list-style-type:none;
-    border-bottom: 1px solid #ccc;
-}
-a {
-    text-decoration: none;
-}
-.quest-item{
-    margin-bottom: 24px;
-    overflow: hidden;
-}
-.quest-list .quest-item .link-tit {
-    color: #e9c06c;
-}
-.quest-list .quest-item img{
-    display: block;
-    float:left;
-    margin-right: 20px;
-    width:200px;
+    .crumbs{
+        text-decoration: none;
+    }
+    .bread{
+        font-size: 16px;
+    }
+    #questions{
+        margin-left: 30px;
+    }
+    .questionnaire {
+        position: relative;
+    }
+    .my-container {
+        margin: 0 auto;
+    }
+    .survey-wrapper {
+        position: relative;
+        margin: 40px 0;
+    }
+    .clearfix {
+        zoom: 1;
+    }
+    .survey-left {
+        width: 890px;
+    }
+    .pull-left {
+        float: left !important;
+    }
+    .search {
+        position: relative;
+    }
+    input {
+        width: 300px;
+        height: 25px;
+        line-height: 1.6;
+        padding: 8px 0 8px 16px;
+        font-size: 13px;
+        color: #b2b2b2;
+        border-radius: 100px;
+        border: 1px solid #30a6f5;
+    }
+    .search-icon {
+        position: absolute;
+        top: 11px;
+        right: 11px;
+        width: 25px;
+        height: 20px;
+        margin: 0;
+        border: none;
+        cursor: pointer;
+        background: url("https://www.wjx.cn/images/newimg/pic-1/search.png") no-repeat center;
+    }
+    .survey-folder {
+        margin: 20px 0;
+        border-top: 2px solid #f5f7fa;
+    }
+    ul {
+        list-style: none;
+        display: block;
+        -webkit-margin-before: 1em;
+        -webkit-margin-after: 1em;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+    li {
+        list-style-type:none;
+        border-bottom: 1px solid #ccc;
+    }
+    a {
+        text-decoration: none;
+    }
+    .quest-item{
+        margin-bottom: 24px;
+        overflow: hidden;
+    }
+    .quest-list .quest-item .link-tit {
+        color: #e9c06c;
+    }
+    .quest-list .quest-item img{
+        display: block;
+        float:left;
+        margin-right: 20px;
+        width:200px;
 
-}
-.quest-list .quest-item .quest-name{
-    font-size: 22px;
-    font-weight: lighter;
-    color: #3e3e3e;
-    line-height: 50px;
-    height: 50px;
-    overflow: hidden;
-}
-.quest-list .quest-item .quest-num {
-    float: right;
-    height: 60px;
-    overflow: hidden;
-    font-size: 14px;
-    color: #898989;
-    line-height: 1.5;
-}
-.questionnaire p{
-    font-size: 18px;
-    margin-top: 30px;
-}
-.questionnaire hr{
-    width: 72.7%;
-}
-.left_radio{
-    margin-right: 200px;
-    margin-left: 30px;
-}
-.essay-answer{
-    width: 400px;
-    /*font-size: 15px;*/
-}
-.submit_btn{
-    margin-left: 180px;
-    margin-top: 30px
-}
-.selector{
-    width:700px;
-    margin-top: 20px;
-    display: flex;
-}
-.protype_selector{
-    margin-left: 50px;
-    float:left;
-}
-.prosales_selector{
-    margin-left: 40px;
-    flex: 1;
-}
-.questionbox{
-    padding: 28px;
-    width: 800px;
-    border: 1px solid #E1E1E1;
-    box-shadow: 0 0 2px rgba(0,0,0,.1);
-    margin-top: 20px;
-}
+    }
+    .quest-list .quest-item .quest-name{
+        font-size: 22px;
+        font-weight: lighter;
+        color: #3e3e3e;
+        line-height: 50px;
+        height: 50px;
+        overflow: hidden;
+    }
+    .quest-list .quest-item .quest-num {
+        float: right;
+        height: 60px;
+        overflow: hidden;
+        font-size: 14px;
+        color: #898989;
+        line-height: 1.5;
+    }
+    .questionnaire p{
+        font-size: 18px;
+        margin-top: 30px;
+    }
+    .questionnaire hr{
+        width: 72.7%;
+    }
+    .left_radio{
+        margin-right: 200px;
+        margin-left: 30px;
+    }
+    .essay-answer{
+        width: 400px;
+        /*font-size: 15px;*/
+    }
+    .submit_btn{
+        margin-left: 180px;
+        margin-top: 30px
+    }
+    .selector{
+        width:700px;
+        margin-top: 20px;
+        display: flex;
+    }
+    .protype_selector{
+        margin-left: 50px;
+        float:left;
+    }
+    .prosales_selector{
+        margin-left: 40px;
+        flex: 1;
+    }
+    .questionbox{
+        padding: 28px;
+        width: 800px;
+        border: 1px solid #E1E1E1;
+        box-shadow: 0 0 2px rgba(0,0,0,.1);
+        margin-top: 20px;
+    }
 </style>
