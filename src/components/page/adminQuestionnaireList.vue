@@ -18,7 +18,7 @@
                     <el-col :span="24" style="height: 50px">
                         <div class="grid-content bg-purple-dark">
                             <span class="quest-name">{{quest.name}}</span>
-                            <span class="quest-id">&nbsp;&nbsp;&nbsp;ID：{{quest.id}}</span>
+                            <span class="quest-id">&nbsp;&nbsp;&nbsp;ID：{{quest.indexNum}}</span>
                             <span class="quest-num">答卷：{{quest.number}}</span>
                         </div>
                     </el-col>
@@ -156,6 +156,7 @@
                         item.id = response.data[i].id;
                         item.name = response.data[i].name;
                         item.number = response.data[i].number;
+                        item.indexNum = i+1;
                         self.questList.push(item);
                     }
                     console.log(self.questList);
@@ -223,6 +224,7 @@
                         })
                     };
                     this.$router.push('/admin/adminQuestionnairelist');
+                    self.getQuest();
                 }).catch((error)=>{
                     self.$message({
                         type:'info',

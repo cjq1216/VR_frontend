@@ -6,6 +6,9 @@
                 <el-breadcrumb-item>问卷编辑</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
+        <el-row>
+            <el-button class="refresh-btn" type="danger" @click="cancel()">取消</el-button>
+        </el-row>
         <div class="form-box">
             <el-form :model="q" ref="q" label-width="100px" label-position="top">
                 <el-form-item
@@ -63,6 +66,11 @@
         },
 
         methods: {
+            cancel(){
+                var self = this;
+                console.log("go to list!");
+                self.$router.push('/admin/adminQuestionnairelist');
+            },
             fetchData(id) {
                 var self = this;
                 //self.questList=[];
@@ -356,5 +364,11 @@
 
     .buttons-container {
         margin-bottom: 32px;
+    }
+    .refresh-btn{
+        margin-top: -39px;
+        margin-right: 20px;
+        float: right;
+        margin-bottom: 10px;
     }
 </style>
