@@ -51,6 +51,7 @@
                 hostURL:'/VR',
                 q_id: '1',
                 q_name: 'test',
+                q_desc:'',
                 quests: [],
                 answer: {},
                 isLoading: false,
@@ -313,7 +314,28 @@
                     this.isLoading = false;
                     console.error(err)
                 })
-            }
+            },
+            getQuestionnaireInfo(qid){
+                var self = this;
+                self.$axios({
+                    url:'/question/getAlLQuestionaire',
+                    method:'get',
+                    baseURL:self.hostURL
+                }).then((response)=>{
+                    console.log(response.data);
+                    for(let i=0;i<response.data.length;i++){
+                        if(response.data[i].id == qid){
+                            self.q_name = response.data[i].name;
+                            self.q_desc = response.data[i].description;
+                        }
+                    }
+                }).catch((error)=>{
+                    self.$message({
+                        type:'info',
+                        message:'无法获取问卷，请重试'
+                    });
+                });
+            },
         },
 
         mounted() {
@@ -323,13 +345,11 @@
                 this.$router.replace('/login');
             }
             var tmp1 = location.href.split('?');
-            var tmp2 = tmp1[1].split('&');
-            self.q_id = tmp2[0];
-            self.q_name = tmp2[1];
+            self.q_id = tmp1[1];
             console.log(self.q_id);
-            console.log(self.q_name);
             //self.getData(q_id);
-            self.fetchData(self.q_id)
+            self.getQuestionnaireInfo(self.q_id);
+            self.fetchData(self.q_id);
         },
 
     }

@@ -243,7 +243,7 @@
                 var self=this;
                 console.log("go to QuestionnaierDetail!");
                 console.log(quest.id);
-                self.$router.push('/user/questionnairedetail?'+quest.id+'&'+quest.name);
+                self.$router.push('/user/questionnairedetail?'+quest.id);
             },
             // getData(id){
             //     var self = this;

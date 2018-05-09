@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item to="/admin/adminQuestionnairelist"><i class="el-icon-date"></i> 问卷管理</el-breadcrumb-item>
-                <el-breadcrumb-item>问卷创建</el-breadcrumb-item>
+                <el-breadcrumb-item>问卷编辑</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="form-box">
@@ -49,9 +49,9 @@
                 load: false,
                 select_cast: '',
                 q: {
-                    q_id:null,
-                    q_name:'',
-                    q_desc:'',
+                    q_id:'',
+                    q_name:'123',
+                    q_desc:'123',
                     q_ava:0,
                     e_id:null,
                     e_tit:'',
@@ -59,13 +59,6 @@
                     e_type:'',
                 },
                 quests: [],
-                dynamicValidateForm: {
-                    domains: [{
-                        value: ''
-                    }],
-                    email: ''
-                },
-
             }
         },
 
@@ -90,6 +83,25 @@
                     });
                 });
             },
+            getQuestionnaireInfo(qid){
+                this.$axios({
+                    url:'/question/getAlLQuestionaire',
+                    method:'get',
+                    baseURL:this.hostURL
+                }).then((response)=>{
+                    for(var i=0;i<response.data.length;i++){
+                        if(response.data[i].id == qid){
+                            this.q.q_name = response.data[i].name;
+                            this.q.q_desc = response.data[i].description;
+                        }
+                    }
+                }).catch((error)=>{
+                    this.$message({
+                        type:'info',
+                        message:'无法获取问卷，请重试'
+                    });
+                });
+            },
             createOrUpdateQuestionaire() {
                 const plainQ = JSON.parse(JSON.stringify(this.q))
                 const plainQuests = JSON.parse(JSON.stringify(this.quests))
@@ -108,7 +120,7 @@
                     if (plainQuest.e_type !== QUESTION_TEXT && (!plainQuest.e_sel || plainQuest.e_sel.length <=1)) {
                         this.$message.error(`请检查第${i + 1}题，选择题至少需要提供两个选项`)
                         return
-                    } else if (plainQuest.e_sel && plainQuest.e_sel.length > 0) {
+                    } else if (plainQuest.e_type !== QUESTION_TEXT && plainQuest.e_sel && plainQuest.e_sel.length > 0) {
                         for (let j = 0; j < plainQuest.e_sel.length; j++) {
                             if (!plainQuest.e_sel[j].value) {
                                 this.$message.error(`请填写第${i + 1}题的第${j + 1}个选项`)
@@ -132,6 +144,7 @@
                         questionaire.push({
                             ...basicInfo,
                             ...quest,
+                            e_id: index + 1,
                         })
                     } else {
                         if (quest.e_sel && quest.e_sel.length > 0) {
@@ -304,12 +317,10 @@
         mounted() {
             const quests = []
             var tmp1 = location.href.split('?');
-            var tmp2 = tmp1[1].split('&');
-            this.q.q_id = tmp2[0];
-            this.q.q_name = tmp2[1];
-            this.q.q_desc = tmp2[2];
-            console.log(this.q);
+            this.q.q_id = tmp1[1];
+            console.log(this.q.q_id);
             if (this.q.q_id){
+                this.getQuestionnaireInfo(this.q.q_id);
                 this.fetchData(this.q.q_id).then((data) => {
                     data.quests.forEach((quest) => {
                         const transformedQuest = {
@@ -317,7 +328,7 @@
                             e_title: quest.question,
                             e_type: quest.type,
                         }
-                        if (quest.subs) {
+                        if (quest.type === QUESTION_SINGLE || quest.type === QUESTION_MULTIPLE) {
                             const e_sel = []
                             quest.subs.forEach((sub) => {
                                 e_sel.push({
