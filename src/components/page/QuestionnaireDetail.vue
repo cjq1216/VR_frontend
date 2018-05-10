@@ -15,7 +15,10 @@
             <form id="questions">
                 <div class="quest">
                     <div v-for="quest in quests">
-                        <h4>{{quest.e_id}}.&nbsp;{{quest.question}}</h4>
+                        <h4>{{quest.e_id}}.&nbsp;{{quest.question}}&nbsp;&nbsp;
+                            <span v-if="quest.type===1" class="question-type">[单选题]&nbsp;&nbsp;</span>
+                            <span v-if="quest.type===2" class="question-type">[多选题]&nbsp;&nbsp;</span>
+                        </h4>
                         <div class="single" v-if="quest.type===1">
                             <div v-for="choice in quest.subs">
                                 <label :for="choice.choices">
@@ -371,8 +374,9 @@
         text-align: center;
     }
 
-    .questionnaire__radio {
-        padding: 0px;
-
+    .question-type{
+        color: #0066FF;
+        font-weight: normal;
+        font-size: 14px;
     }
 </style>

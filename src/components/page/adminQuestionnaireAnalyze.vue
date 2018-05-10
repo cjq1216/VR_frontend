@@ -7,32 +7,41 @@
             </el-breadcrumb>
         </div>
         <el-row>
-            <el-button class="refresh-btn" type="success" @click="goTolist()">返回</el-button>
+            <el-button class="refresh-btn" type="primary" @click="goTolist()">返回</el-button>
+            <el-button class="refresh-btn" type="primary" @click="getPdf()" :disabled="true">下载报告</el-button>
         </el-row>
-        <div class="questionnaire-box">
-            <div class="questionnaire-title">{{questionaireName}}</div>
-            <div class="questionnaire-info">总作答人数：{{allNum}}</div>
-        </div>
-        <br/>
-        <div>
-            <div v-for="answer in answers">
-                <h4 class="question-title">{{answer.quesitonId}}.&nbsp;{{answer.question}}&nbsp;&nbsp;
-                    <span v-if="answer.type===1" class="question-type">[单选题]</span>
-                    <span v-if="answer.type===2" class="question-type">[多选题]</span>
-                    <span v-if="answer.type===3" class="question-type">[问答题]</span>
-                </h4>
-                <div v-if="answer.type===2 || answer.type===1" :id="answer.quesitonId" style="width:80%;height:400px;"></div>
-                <div v-else class="ansCon">
-                    <el-table :data="answer.con" stripe style="width: 80%">
-                        <el-table-column prop="cont" label="回答"></el-table-column>
-                    </el-table>
+        <div class="pdf-dom" id="pdfDom">
+            <div class="questionnaire-box">
+                <div class="questionnaire-title">{{questionaireName}}</div>
+                <div class="questionnaire-info">总作答人数：{{allNum}}</div>
+            </div>
+            <br/>
+            <div>
+                <div v-for="answer in answers">
+                    <h4 class="question-title">{{answer.quesitonId}}.&nbsp;{{answer.question}}&nbsp;&nbsp;
+                        <span v-if="answer.type===1" class="question-type">[单选题]&nbsp;&nbsp;</span>
+                        <span v-if="answer.type===2" class="question-type">[多选题]&nbsp;&nbsp;</span>
+                        <span v-if="answer.type===3" class="question-type">[问答题]</span>
+                        <el-switch v-if="answer.type!==3" v-model="answer.gswitch" on-color="#13ce66" off-color="#13ce66" :width=80 on-text="柱状图" off-text="饼 图" @change="GSwitch(answer,$event)">
+                        </el-switch>
+                    </h4>
+                    <div v-if="answer.type===2 || answer.type===1" :id="answer.quesitonId" style="width:80%;height:400px;"></div>
+                    <div v-else class="ansCon">
+                        <el-table :data="answer.con" stripe style="width: 80%" height="250">
+                            <el-table-column prop="cont" label="回答"></el-table-column>
+                        </el-table>
+                    </div>
                 </div>
             </div>
         </div>
+        <div id="test"></div>
     </div>
 </template>
 
 <script>
+    import html2Canvas from 'html2canvas';
+    import JsPDF from 'jspdf';
+
     // 引入 ECharts 主模块
     var echarts = require('echarts/lib/echarts');
     // 引入柱状图
@@ -61,6 +70,7 @@
                         choice:['a选项','b选项'],
                         ansNum:[30,45],
                         ansContent:[],
+                        gswitch:true
                     },
                     {
                         quesitonId:2,
@@ -69,6 +79,7 @@
                         choice:['a','b'],
                         ansNum:[25,50],
                         ansContent:[],
+                        gswitch:true
                     },
                     {
                         quesitonId:3,
@@ -83,6 +94,44 @@
         },
 
         methods: {
+            getPdf: function () {
+                let pdfDom = document.querySelector('#pdfDom');
+                html2Canvas(pdfDom,function(canvas){
+                    document.body.appendChild(canvas);
+                })
+                // html2Canvas(pdfDom, {
+                //     onrendered: function(canvas) {
+                //         console.log('jaskldjglkasjdklgj');
+                //         document.body.appendChild(canvas);
+                //         let contentWidth = canvas.width;
+                //         let contentHeight = canvas.height;
+                //         let pageHeight = contentWidth / 592.28 * 841.89;
+                //         let leftHeight = contentHeight;
+                //         let position = 0;
+                //         let imgWidth = 595.28;
+                //         let imgHeight = 592.28 / contentWidth * contentHeight;
+                //
+                //         let pageData = canvas.toDataURL('image/jpeg', 1.0);
+                //
+                //         let PDF = new JsPDF('', 'pt', 'a4');
+                //
+                //         if (leftHeight < pageHeight) {
+                //             PDF.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight)
+                //         } else {
+                //             while (leftHeight > 0) {
+                //                 PDF.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight);
+                //                 leftHeight -= pageHeight;
+                //                 position -= 841.89;
+                //                 if (leftHeight > 0) {
+                //                     PDF.addPage()
+                //                 }
+                //             }
+                //         }
+                //         PDF.saveAs('report.pdf')
+                //     }
+                // })
+            },
+
             goTolist(){
                 var self = this;
                 console.log("go to list!");
@@ -108,6 +157,7 @@
                         message:'无法获取问卷，请重试'
                     });
                 });
+                this.drawLine();
             },
             getAns(qid){
                 this.$axios({
@@ -119,13 +169,126 @@
                     }
                 }).then((response)=>{
                     this.answers=[];
-                    this.answers=response.data;
+                    const apiAnswers = response.data
+                    for (let i=0;i<apiAnswers.length;i++){
+                        if(apiAnswers[i].type === 3){
+                            apiAnswers[i].con =[];
+                            for (let j=0;j<apiAnswers[i].ansContent.length;j++){
+                                apiAnswers[i].con.push(
+                                    {
+                                        cont:apiAnswers[i].ansContent[j]
+                                    }
+                                )
+                            }
+                        }
+                        else {
+                            apiAnswers[i].gswitch = true
+                        }
+                    }
+
+                    this.answers = apiAnswers
                 }).catch((error)=>{
                     this.$message({
                         type:'info',
                         message:'无法获取问卷作答情况，请重试'
                     });
                 });
+                this.drawLine();
+            },
+            GSwitch(answer,$event){
+                console.log($event);
+                //console.log(answer.quesitonId);
+                let mychart = echarts.init(document.getElementById(answer.quesitonId.toString()),'light');
+                let option1 = {
+                    title: {},
+                    legend: {},
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}<br />{c}"
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            // dataZoom: {
+                            //     yAxisIndex: 'none'
+                            // },
+                            dataView: {
+                                readOnly: true
+                            },
+                            saveAsImage: {}
+                        }
+                    },
+                    xAxis: {
+                        show: true,
+                        data: answer.choice
+                    },
+                    yAxis: {
+                        show: true
+                    },
+                    series: [{
+                        name: '选择人数',
+                        type: 'bar',
+                        data: answer.ansNum //number
+                    }]
+                };
+                let pieData =[];
+                for (let j=0;j<answer.choice.length;j++){
+                    pieData.push({
+                        name: answer.choice[j],
+                        value: answer.ansNum[j]
+                    })
+                }
+                let option2 = {
+                    title : {},
+                    tooltip : {
+                        trigger: 'item',
+                        formatter: "{b}<br />{c} ({d}%)"
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {
+                                readOnly: true
+                            },
+                            saveAsImage: {}
+                        }
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        data: answer.choice
+                    },
+                    xAxis: {
+                        show: false
+                    },
+                    yAxis: {
+                        show: false
+                    },
+                    series : [
+                        {
+                            name: '选择人数',
+                            type: 'pie',
+                            radius : '65%',
+                            center: ['50%', '50%'],
+                            data:pieData, //choice and number in name and value
+                            itemStyle: {
+                                emphasis: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+                if (!$event){
+                    // 绘制图
+                    mychart.setOption(option2);
+                } else {
+                    // 绘制图
+                    mychart.setOption(option1);
+                }
+
             },
             drawLine() {
                 for (let i=0;i<this.answers.length;i++){
@@ -138,45 +301,28 @@
                             toolbox: {
                                 show: true,
                                 feature: {
-                                    dataZoom: {
-                                        yAxisIndex: 'none'
+                                    // dataZoom: {
+                                    //     yAxisIndex: 'none'
+                                    // },
+                                    dataView: {
+                                        readOnly: true
                                     },
-                                    //dataView: {readOnly: true},
-                                    magicType: {type: ['bar']},
-                                    restore: {},
                                     saveAsImage: {}
                                 }
                             },
 
                             xAxis: {
-                                data: []
+                                data: this.answers[i].choice
                             },
                             yAxis: {},
                             series: [{
+                                name: '选择人数',
                                 type: 'bar',
-                                data: []
+                                data: this.answers[i].ansNum //number
                             }]
                         };
-                        // 绘制图表
+                        // 绘制柱状图
                         mychart.setOption(option1);
-                        mychart.setOption({
-                            xAxis: {
-                                data: this.answers[i].choice
-                            },
-                            series: [{
-                                data: this.answers[i].ansNum
-                            }]
-                        });
-                    } else {
-                        this.answers[i].con =[];
-                        for (let j=0;j<this.answers[i].ansContent.length;j++){
-                            this.answers[i].con.push(
-                                {
-                                    cont:this.answers[i].ansContent[j]
-                                }
-                            )
-                        }
-                        //console.log(this.answers[i]);
                     }
                 }
             }
@@ -187,6 +333,7 @@
             var tmp1 = location.href.split('?');
             this.qId = tmp1[1];
             if(this.qId){
+                //this.answers = [];
                 this.getAns(this.qId);
                 this.getQuestionnaireInfo(this.qId);
             }
@@ -200,6 +347,7 @@
     }
     .refresh-btn{
         margin-top: -39px;
+        margin-right: 20px;
         float: right;
         margin-bottom: 10px;
     }

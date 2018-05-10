@@ -187,7 +187,32 @@
 
     入参（问卷id q_id:int)
     
-    出参（问卷id:questionaireId，问卷名:questionaireName，题目id:quesitonId，题目类型:type，题目:qusetion，选项:choice，选择人数:ansNum，回答内容:ansContent，总回答人数:allAnsNum）
+    出参（answers:[
+                   {
+                       quesitonId:1,
+                       type:1,
+                       question:'单选题1',
+                       choice:['a选项','b选项'],
+                       ansNum:[30,45],
+                       ansContent:[],
+                   },
+                   {
+                       quesitonId:2,
+                       type:2,
+                       question:'多选题1',
+                       choice:['a','b'],
+                       ansNum:[25,50],
+                       ansContent:[],
+                   },
+                   {
+                       quesitonId:3,
+                       type:3,
+                       question:'问答题',
+                       choice:[],
+                       ansNum:[],
+                       ansContent:['我的回答','你的回答','他的'],
+                   },
+               ],）
     
 ### 设置问卷可用性
 /question/setQAva
