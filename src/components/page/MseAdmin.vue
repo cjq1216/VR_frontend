@@ -15,7 +15,8 @@
                         style="width: 100%">
                     <el-table-column
                             prop="evaluationTitle"
-                            label="文章标题">
+                            label="文章标题"
+                            width="160">
                     </el-table-column>
                     <el-table-column
                             prop="authorName"
@@ -33,7 +34,7 @@
                     <el-table-column
                             prop="ups"
                             label="点赞数"
-                            width="130">
+                            width="120">
                     </el-table-column>
                     <el-table-column
                             prop="downs"

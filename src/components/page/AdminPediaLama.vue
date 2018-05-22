@@ -17,10 +17,11 @@
                 <el-table-column prop="termName" label="词条名"></el-table-column>
                 <el-table-column prop="errorContent" label="报错内容"></el-table-column>
                 <el-table-column prop="userName" label="用户名" width="180"></el-table-column>
-                <el-table-column label="操作" width="180">
+                <el-table-column label="操作" width="220">
                     <template scope="scope">
                         <el-button v-if="errorList[scope.$index].handleState===0" type="primary" @click.native.prevent="handleErr(scope.$index, errorList)" size="small">未读</el-button>
                         <el-button v-else size="small" disabled>已读</el-button>
+                        <el-button @click.native.prevent="editLama2(scope.$index, errorList)" size="small">去处理</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -172,6 +173,11 @@
                 var self=this;
                 console.log("go to adminPediaLamaEditor!");
                 self.$router.push('/admin/pediaLamaCreater?'+self.lamaList[index].id);
+            },
+            editLama2(index, errorList){
+                var self=this;
+                console.log("go to adminPediaLamaEditor!");
+                self.$router.push('/admin/pediaLamaCreater?'+self.errorList[index].tId);
             },
 
             createLama(){

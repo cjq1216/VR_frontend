@@ -25,7 +25,7 @@
             <h2>类别管理：</h2>
             <el-table :data="classList" border style="width: 100% " max-height="500">
 
-                <el-table-column prop="indexNum" label="类别 id" width="120"></el-table-column>
+                <el-table-column prop="indexNum" label="类别 id" width="130"></el-table-column>
                 <el-table-column prop="className" label="类别名"></el-table-column>
                 <el-table-column
                         label="操作"
